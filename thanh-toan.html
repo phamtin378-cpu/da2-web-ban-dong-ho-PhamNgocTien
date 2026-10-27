@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh toán | TIMEHOUSE</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <noscript><div style="padding:12px;background:#111;color:#fff;text-align:center">Vui lòng bật JavaScript để sử dụng website TIMEHOUSE.</div></noscript>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="page-head">
+      <div class="container">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+          <li class="breadcrumb-item"><a href="gio-hang.html">Giỏ hàng</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Thanh toán</li>
+        </ol></nav>
+        <h1 class="page-title">Thanh toán</h1>
+        <ol class="checkout-steps mt-3" aria-label="Các bước mua hàng">
+          <li class="done"><a href="gio-hang.html">Giỏ hàng</a></li><li class="active">Thanh toán</li><li>Hoàn tất</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section-sm">
+      <div class="container">
+        <form id="checkoutForm" novalidate>
+          <div class="row g-4">
+            <div class="col-lg-7">
+              <!-- 1. Địa chỉ -->
+              <div class="co-block">
+                <h2 class="co-title"><span>1</span>Địa chỉ nhận hàng</h2>
+                <div id="addressList" class="d-grid gap-2"></div>
+                <div id="newAddress" class="mt-3" hidden>
+                  <div class="row g-3">
+                    <div class="col-sm-6">
+                      <label class="form-label" for="aName">Họ tên người nhận</label>
+                      <input type="text" class="form-control" id="aName" autocomplete="name">
+                    </div>
+                    <div class="col-sm-6">
+                      <label class="form-label" for="aPhone">Số điện thoại</label>
+                      <input type="tel" class="form-control" id="aPhone" autocomplete="tel" placeholder="0xxxxxxxxx">
+                    </div>
+                    <div class="col-sm-6">
+                      <label class="form-label" for="aProvince">Tỉnh / Thành phố</label>
+                      <select class="form-select" id="aProvince"><option value="">-- Chọn tỉnh/thành --</option></select>
+                    </div>
+                    <div class="col-sm-6">
+                      <label class="form-label" for="aWard">Phường / Xã</label>
+                      <input type="text" class="form-control" id="aWard" placeholder="Ví dụ: Phường Cầu Giấy">
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="aStreet">Địa chỉ cụ thể</label>
+                      <input type="text" class="form-control" id="aStreet" placeholder="Số nhà, tên đường, tòa nhà…" autocomplete="street-address">
+                    </div>
+                    <div class="col-12">
+                      <div class="form-check"><input class="form-check-input" type="checkbox" id="aSave" checked><label class="form-check-label" for="aSave">Lưu vào sổ địa chỉ</label></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. Vận chuyển -->
+              <div class="co-block">
+                <h2 class="co-title"><span>2</span>Phương thức giao hàng</h2>
+                <div id="shipList" class="d-grid gap-2"></div>
+              </div>
+
+              <!-- 3. Thanh toán -->
+              <div class="co-block">
+                <h2 class="co-title"><span>3</span>Phương thức thanh toán</h2>
+                <div id="payList" class="d-grid gap-2"></div>
+                <div id="bankInfo" class="pay-extra" hidden>
+                  <i class="bi bi-info-circle me-1"></i>Mã QR và thông tin chuyển khoản sẽ hiển thị sau khi đặt hàng. Đơn được xác nhận khi cửa hàng nhận được thanh toán.
+                </div>
+                <div id="cardForm" class="pay-extra" hidden>
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label class="form-label" for="cNumber">Số thẻ</label>
+                      <input type="text" class="form-control" id="cNumber" inputmode="numeric" autocomplete="cc-number" placeholder="4111 1111 1111 1111" maxlength="19">
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="cName">Tên in trên thẻ</label>
+                      <input type="text" class="form-control text-uppercase" id="cName" autocomplete="cc-name" placeholder="NGUYEN VAN A">
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label" for="cExp">Ngày hết hạn</label>
+                      <input type="text" class="form-control" id="cExp" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5">
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label" for="cCvv">CVV</label>
+                      <input type="password" class="form-control" id="cCvv" autocomplete="cc-csc" inputmode="numeric" placeholder="•••" maxlength="4">
+                    </div>
+                  </div>
+                  <div class="small text-muted-2 mt-2"><i class="bi bi-shield-lock me-1"></i>Cổng thanh toán mô phỏng – không thực hiện giao dịch thật. Thẻ thử: 4111 1111 1111 1111.</div>
+                </div>
+              </div>
+
+              <!-- 4. Ghi chú -->
+              <div class="co-block">
+                <h2 class="co-title"><span>4</span>Ghi chú đơn hàng</h2>
+                <textarea class="form-control" id="note" rows="3" maxlength="300" placeholder="Ví dụ: giao giờ hành chính, gọi trước khi giao…"></textarea>
+              </div>
+            </div>
+
+            <div class="col-lg-5">
+              <aside class="summary-card" id="summary"></aside>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="assets/data/cai-dat.js"></script>
+  <script src="assets/data/danh-muc.js"></script>
+  <script src="assets/data/thuong-hieu.js"></script>
+  <script src="assets/data/san-pham.js"></script>
+  <script src="assets/data/nguoi-dung.js"></script>
+  <script src="assets/data/khuyen-mai.js"></script>
+  <script src="assets/data/bai-viet.js"></script>
+  <script src="assets/data/danh-gia.js"></script>
+  <script src="assets/data/don-hang.js"></script>
+  <script src="assets/js/tien-ich.js"></script>
+  <script src="assets/js/luu-tru.js"></script>
+  <script src="assets/js/xac-thuc.js"></script>
+  <script src="assets/js/danh-muc-san-pham.js"></script>
+  <script src="assets/js/gio-hang.js"></script>
+  <script src="assets/js/dat-hang.js"></script>
+  <script src="assets/js/thanh-phan.js"></script>
+  <script src="assets/js/pages/thanh-toan.js"></script>
+</body>
+</html>

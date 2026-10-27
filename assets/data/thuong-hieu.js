@@ -1,0 +1,20 @@
+window.SEED_BRANDS = [
+  { id: 'casio', name: 'Casio', country: 'Nhật Bản', featured: true },
+  { id: 'seiko', name: 'Seiko', country: 'Nhật Bản', featured: true },
+  { id: 'citizen', name: 'Citizen', country: 'Nhật Bản', featured: true },
+  { id: 'orient', name: 'Orient', country: 'Nhật Bản', featured: true },
+  { id: 'tissot', name: 'Tissot', country: 'Thụy Sĩ', featured: true },
+  { id: 'longines', name: 'Longines', country: 'Thụy Sĩ', featured: true },
+  { id: 'dw', name: 'Daniel Wellington', country: 'Thụy Điển', featured: true },
+  { id: 'fossil', name: 'Fossil', country: 'Mỹ', featured: false },
+  { id: 'apple', name: 'Apple', country: 'Mỹ', featured: true },
+  { id: 'samsung', name: 'Samsung', country: 'Hàn Quốc', featured: false },
+  { id: 'garmin', name: 'Garmin', country: 'Mỹ', featured: false },
+  { id: 'xiaomi', name: 'Xiaomi', country: 'Trung Quốc', featured: false },
+  { id: 'hermle', name: 'Hermle', country: 'Đức', featured: true },
+  { id: 'howard-miller', name: 'Howard Miller', country: 'Mỹ', featured: false },
+  { id: 'rhythm', name: 'Rhythm', country: 'Nhật Bản', featured: true },
+  { id: 'karlsson', name: 'Karlsson', country: 'Hà Lan', featured: false },
+  { id: 'vinh-hung', name: 'Vĩnh Hưng', country: 'Việt Nam', featured: false },
+  { id: 'timehouse', name: 'TIMEHOUSE', country: 'Việt Nam', featured: false }
+];

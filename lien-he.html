@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liên hệ | TIMEHOUSE</title>
+  <meta name="description" content="Liên hệ TIMEHOUSE: hotline, email, form gửi yêu cầu tư vấn.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+</head>
+<body data-view="contact">
+  <noscript><div style="padding:12px;background:#111;color:#fff;text-align:center">Vui lòng bật JavaScript để sử dụng website TIMEHOUSE.</div></noscript>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="page-head">
+      <div class="container">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb" id="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Liên hệ</li>
+        </ol></nav>
+        <h1 class="page-title" id="pageTitle">Liên hệ</h1>
+        <p class="text-muted-2 mt-2 mb-0" id="pageSub">Chúng tôi phản hồi trong vòng 24 giờ làm việc.</p>
+      </div>
+    </section>
+    <section class="section-sm">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-lg-5"><div class="acc-card h-100" id="contactInfo"></div></div>
+          <div class="col-lg-7">
+            <form class="acc-card" id="contactForm" novalidate>
+              <div class="summary-title">Gửi yêu cầu cho chúng tôi</div>
+              <div id="contactProduct"></div>
+              <div class="row g-3">
+                <div class="col-md-6"><label class="form-label" for="ctName">Họ và tên <span class="text-sale">*</span></label><input class="form-control" id="ctName" autocomplete="name"></div>
+                <div class="col-md-6"><label class="form-label" for="ctPhone">Số điện thoại <span class="text-sale">*</span></label><input type="tel" class="form-control" id="ctPhone" autocomplete="tel"></div>
+                <div class="col-md-6"><label class="form-label" for="ctEmail">Email</label><input type="email" class="form-control" id="ctEmail" autocomplete="email"></div>
+                <div class="col-md-6"><label class="form-label" for="ctSubject">Chủ đề</label>
+                  <select class="form-select" id="ctSubject">
+                    <option>Tư vấn sản phẩm</option><option>Đặt hàng sản phẩm hết hàng</option><option>Bảo hành / sửa chữa</option>
+                    <option>Đơn hàng & giao hàng</option><option>Hợp tác / quà tặng doanh nghiệp</option><option>Góp ý</option>
+                  </select></div>
+                <div class="col-12"><label class="form-label" for="ctMessage">Nội dung <span class="text-sale">*</span></label><textarea class="form-control" id="ctMessage" rows="5" maxlength="1000"></textarea></div>
+              </div>
+              <button type="submit" class="btn btn-dark mt-3">Gửi yêu cầu</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="assets/data/cai-dat.js"></script>
+  <script src="assets/data/danh-muc.js"></script>
+  <script src="assets/data/thuong-hieu.js"></script>
+  <script src="assets/data/san-pham.js"></script>
+  <script src="assets/data/nguoi-dung.js"></script>
+  <script src="assets/data/khuyen-mai.js"></script>
+  <script src="assets/data/bai-viet.js"></script>
+  <script src="assets/data/danh-gia.js"></script>
+  <script src="assets/data/don-hang.js"></script>
+  <script src="assets/js/tien-ich.js"></script>
+  <script src="assets/js/luu-tru.js"></script>
+  <script src="assets/js/xac-thuc.js"></script>
+  <script src="assets/js/danh-muc-san-pham.js"></script>
+  <script src="assets/js/gio-hang.js"></script>
+  <script src="assets/js/dat-hang.js"></script>
+  <script src="assets/js/thanh-phan.js"></script>
+  <script src="assets/js/pages/noi-dung.js"></script>
+</body>
+</html>

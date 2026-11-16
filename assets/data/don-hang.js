@@ -34,7 +34,7 @@
       history.push({ status: 'cancelled', at: new Date(t + 3600000).toISOString(), by: user.id, byName: user.name, note: 'Khách đổi ý' });
     }
     const addr = user.addresses[0];
-    const payment = extra.payment || pick(['cod', 'cod', 'bank', 'card']);
+    const payment = extra.payment || pick(['cod', 'cod', 'bank', 'bank']);
     const d = created;
     const code = 'DH' + String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + String(n).padStart(3, '0');
     return {

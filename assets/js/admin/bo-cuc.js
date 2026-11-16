@@ -59,7 +59,7 @@ const Admin = {
   init(page, title) {
     if (!Auth.requireRole('staff', 'admin')) return false;
     const u = Auth.user();
-    if (!PERMS[page].includes(u.role)) { location.replace(ROOT + '403.html'); return false; }
+    if (!PERMS[page].includes(u.role)) { location.replace(ROOT + 'index.html'); return false; }
     document.title = `${title} | Quản trị TIMEHOUSE`;
     const b = Admin.badges();
     const menu = Admin.MENU.filter(([p]) => PERMS[p].includes(u.role)).map(([p, icon, label]) =>

@@ -15,7 +15,7 @@ window.SEED_SETTINGS = {
   freeShipThreshold: 500000,
   shipFee: 30000,
   expressFee: 40000,      // phụ phí giao hỏa tốc
-  bank: { name: 'Vietcombank', account: '0011 0000 68686', owner: 'CONG TY TNHH TIMEHOUSE' },
+  bank: { name: 'Vietcombank', account: '1049799722', owner: 'PHAM NGOC TIEN' },
   heavyShipFee: 150000,   // phụ phí hàng cồng kềnh (đồng hồ cây, treo tường cỡ lớn)
   installFee: 200000,     // lắp đặt tại nhà
   engraveFee: 100000,     // khắc tên

@@ -186,7 +186,7 @@ const Layout = (() => {
             </div>
           </div>
         </div>
-        <div class="footer-bottom">© ${new Date().getFullYear()} ${s.storeName}. Đồ án website bán đồng hồ – dữ liệu minh họa.</div>
+        <div class="footer-bottom">© ${new Date().getFullYear()} ${s.storeName}. Đồ án website bán đồng hồ.</div>
       </div>
     </footer>
     <div class="float-contact">

@@ -19,7 +19,8 @@ const SHIPPING_METHODS = {
 const PAYMENT_METHODS = {
   cod: { label: 'Thanh toán khi nhận hàng (COD)', icon: 'bi-cash-coin' },
   bank: { label: 'Chuyển khoản ngân hàng / QR', icon: 'bi-qr-code' },
-  card: { label: 'Thẻ ATM / Visa / Mastercard', icon: 'bi-credit-card' }
+  // Đã ngừng nhận thanh toán thẻ – chỉ giữ nhãn để hiển thị các đơn cũ
+  card: { label: 'Thẻ ATM / Visa / Mastercard', icon: 'bi-credit-card', disabled: true }
 };
 
 const OrderCalc = {

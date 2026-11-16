@@ -84,8 +84,20 @@
 
   if (needTransfer) {
     const box = $('#qr');
-    if (window.QRCode) new QRCode(box, { text: `${S.bank.name}|${S.bank.account.replace(/\s/g, '')}|${o.total}|${transferNote}`, width: 168, height: 168 });
-    else box.innerHTML = '<div class="small text-muted-2 p-3">Không tải được mã QR – vui lòng chuyển khoản theo thông tin bên cạnh.</div>';
+    // Ảnh QR thật của cửa hàng: đặt file vào assets/img/qr-chuyen-khoan.png (đổi tên file ở QR_IMAGE nếu cần).
+    // Chưa có ảnh → tự tạo mã QR minh họa như cũ.
+    const QR_IMAGE = 'assets/img/qr-chuyen-khoan.png';
+    const fallback = () => {
+      box.innerHTML = '';
+      if (window.QRCode) new QRCode(box, { text: `${S.bank.name}|${S.bank.account.replace(/\s/g, '')}|${o.total}|${transferNote}`, width: 168, height: 168 });
+      else box.innerHTML = '<div class="small text-muted-2 p-3">Không tải được mã QR – vui lòng chuyển khoản theo thông tin bên cạnh.</div>';
+    };
+    const img = new Image();
+    img.alt = 'Mã QR chuyển khoản';
+    img.style.cssText = 'width:100%;height:100%;object-fit:contain;';
+    img.onload = () => { box.innerHTML = ''; box.appendChild(img); };
+    img.onerror = fallback;
+    img.src = QR_IMAGE;
   }
   $('#copyId').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(o.id); Utils.toast('Đã sao chép mã đơn hàng.'); } catch { Utils.toast('Mã đơn: ' + o.id, 'info'); }

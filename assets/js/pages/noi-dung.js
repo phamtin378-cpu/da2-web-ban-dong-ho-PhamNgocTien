@@ -110,7 +110,7 @@
 
     'news-detail'() {
       const post = DB.find('posts', Utils.param('id'));
-      if (!post || post.status !== 'published') { location.replace('404.html'); return; }
+      if (!post || post.status !== 'published') { location.replace('tin-tuc.html'); return; }
       document.title = post.title + ' | TIMEHOUSE';
       document.querySelector('meta[name="description"]').content = post.excerpt;
       $('#breadcrumb').innerHTML = `<li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
@@ -240,13 +240,11 @@
         ['thanh-toan', 'Chính sách thanh toán', `
           <ul><li><strong>COD:</strong> thanh toán tiền mặt khi nhận hàng.</li>
           <li><strong>Chuyển khoản / QR:</strong> ${S.bank.name} – STK ${S.bank.account} – ${S.bank.owner}. Nội dung: TIMEHOUSE + mã đơn hàng.</li>
-          <li><strong>Thẻ ATM / Visa / Mastercard:</strong> thanh toán qua cổng bảo mật, không lưu thông tin thẻ.</li>
           <li>Mã giảm giá: mỗi đơn áp dụng 1 mã; mức giảm theo sản phẩm chỉ áp dụng chương trình có lợi nhất cho khách.</li></ul>`],
         ['bao-mat', 'Chính sách bảo mật', `
           <p>TIMEHOUSE thu thập họ tên, số điện thoại, email và địa chỉ chỉ để xử lý đơn hàng, bảo hành và chăm sóc khách hàng.</p>
           <ul><li>Không chia sẻ thông tin cho bên thứ ba ngoài đơn vị vận chuyển phục vụ giao hàng.</li>
-          <li>Khách hàng có quyền xem, sửa thông tin trong mục Tài khoản hoặc yêu cầu xóa dữ liệu qua ${S.email}.</li>
-          <li>Thông tin thanh toán thẻ được xử lý bởi cổng thanh toán đạt chuẩn PCI DSS.</li></ul>`]
+          <li>Khách hàng có quyền xem, sửa thông tin trong mục Tài khoản hoặc yêu cầu xóa dữ liệu qua ${S.email}.</li></ul>`]
       ];
       $('#policyNav').innerHTML = sections.map(([id, t]) => `<a href="#${id}">${t}</a>`).join('');
       $('#policyBody').innerHTML = sections.map(([id, t, body]) => `<section id="${id}" class="policy-section"><h2>${t}</h2>${body}</section>`).join('');
@@ -270,7 +268,7 @@
           ['Sản phẩm hết hàng thì đặt thế nào?', 'Bấm nút "Liên hệ" trên sản phẩm hoặc gửi form liên hệ với chủ đề "Đặt hàng sản phẩm hết hàng", nhân viên sẽ báo khi có hàng.'],
           ['Làm sao để hủy đơn hàng?', 'Vào Tài khoản → Đơn hàng → chọn đơn → Hủy đơn. Bạn chỉ hủy được khi đơn đang ở trạng thái "Chờ xác nhận"; sau đó vui lòng liên hệ hotline.']]],
         ['Thanh toán & khuyến mãi', [
-          ['Có những hình thức thanh toán nào?', 'COD (tiền mặt khi nhận hàng), chuyển khoản/QR ngân hàng và thẻ ATM/Visa/Mastercard.'],
+          ['Có những hình thức thanh toán nào?', 'COD (tiền mặt khi nhận hàng) và chuyển khoản/QR ngân hàng.'],
           ['Tôi có thể dùng nhiều mã giảm giá cho một đơn không?', 'Mỗi đơn chỉ áp dụng 1 mã giảm giá. Mã được trừ thêm trên giá đã giảm của sản phẩm.'],
           ['Một sản phẩm thuộc nhiều chương trình thì tính giá thế nào?', 'Hệ thống tự áp dụng mức giá thấp nhất trong các chương trình (giảm giá, flash sale) – bạn luôn nhận được ưu đãi tốt nhất.'],
           ['Flash sale có giới hạn số lượng không?', 'Có. Mỗi sản phẩm flash sale có số suất giới hạn; khi hết suất hoặc mua vượt số suất còn lại, sản phẩm được tính giá thường.']]],

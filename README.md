@@ -72,7 +72,6 @@
 ├── index.html, san-pham.html, chi-tiet-san-pham.html, gio-hang.html, thanh-toan.html, dat-hang-thanh-cong.html
 ├── tai-khoan.html, yeu-thich.html, dang-nhap.html, dang-ky.html
 ├── khuyen-mai.html, tin-tuc.html, chi-tiet-tin-tuc.html, gioi-thieu.html, lien-he.html, chinh-sach.html, cau-hoi-thuong-gap.html
-├── 403.html, 404.html
 ├── admin/                    # 11 trang quản trị
 └── assets/
     ├── css/style.css, admin.css

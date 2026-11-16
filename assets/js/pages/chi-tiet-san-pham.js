@@ -1,7 +1,7 @@
 // Trang chi tiết sản phẩm: ảnh, giá & khuyến mãi, mua hàng, thông số, đánh giá, hỏi đáp, sản phẩm liên quan.
 (function () {
   const p = Catalog.product(Utils.param('id'));
-  if (!p || p.status !== 'active') { location.replace('404.html'); return; }
+  if (!p || p.status !== 'active') { location.replace('san-pham.html'); return; }
   const cat = Catalog.category(p.categoryId);
   const parent = Catalog.parentOf(p.categoryId);
   const brand = Catalog.brand(p.brandId);

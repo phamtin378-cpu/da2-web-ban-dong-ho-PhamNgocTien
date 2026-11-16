@@ -56,11 +56,11 @@ const Auth = {
     return false;
   },
 
-  // Trang nội bộ: kiểm tra vai trò, sai quyền → 403
+  // Trang nội bộ: kiểm tra vai trò, sai quyền → về trang chủ
   requireRole(...roles) {
     const u = Auth.user();
     if (!u) { location.replace(ROOT + 'dang-nhap.html?redirect=' + encodeURIComponent(location.pathname.split('/').slice(-2).join('/'))); return false; }
-    if (!roles.includes(u.role)) { location.replace(ROOT + '403.html'); return false; }
+    if (!roles.includes(u.role)) { location.replace(ROOT + 'index.html'); return false; }
     return true;
   },
 

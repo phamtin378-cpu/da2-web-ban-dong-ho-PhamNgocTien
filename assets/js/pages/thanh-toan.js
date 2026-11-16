@@ -2,12 +2,14 @@
 (function () {
   if (!Auth.requireLogin()) return;
   const u = Auth.user();
-  if (u.role !== 'customer') { location.replace('403.html'); return; }
+  if (u.role !== 'customer') { location.replace('index.html'); return; }
   if (!Cart.items().length) { location.replace('gio-hang.html'); return; }
   Layout.init();
 
   const S = DB.settings();
   const state = Object.assign({ address: null, payment: 'cod' }, Draft.get());
+  // Bản nháp cũ có thể còn lưu phương thức đã ngừng (thẻ) → quay về COD
+  if (!PAYMENT_METHODS[state.payment] || PAYMENT_METHODS[state.payment].disabled) state.payment = 'cod';
   const addresses = (u.addresses || []).slice().sort((a, b) => b.isDefault - a.isDefault);
   state.address = addresses.length ? addresses[0].id : 'new';
 
@@ -41,12 +43,11 @@
     }).join('');
   }
   function renderPay() {
-    $('#payList').innerHTML = Object.entries(PAYMENT_METHODS).map(([k, m]) => `
+    $('#payList').innerHTML = Object.entries(PAYMENT_METHODS).filter(([, m]) => !m.disabled).map(([k, m]) => `
       <label class="option-card${state.payment === k ? ' active' : ''}">
         <input class="form-check-input" type="radio" name="pay" value="${k}" ${state.payment === k ? 'checked' : ''}>
         <i class="bi ${m.icon} fs-5"></i><div class="fw-semibold">${m.label}</div></label>`).join('');
     $('#bankInfo').hidden = state.payment !== 'bank';
-    $('#cardForm').hidden = state.payment !== 'card';
   }
 
   /* ---------- Tóm tắt đơn ---------- */
@@ -118,19 +119,6 @@
     if (e.target.id === 'coCoupon' && e.key === 'Enter') { e.preventDefault(); $('#coApply').click(); }
   });
 
-  // Định dạng ô thẻ
-  $('#cNumber').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 16).replace(/(\d{4})(?=\d)/g, '$1 '); });
-  $('#cExp').addEventListener('input', e => {
-    const v = e.target.value.replace(/\D/g, '').slice(0, 4);
-    e.target.value = v.length > 2 ? v.slice(0, 2) + '/' + v.slice(2) : v;
-  });
-
-  const luhn = num => {
-    let sum = 0;
-    [...num].reverse().forEach((d, i) => { let n = +d; if (i % 2) { n *= 2; if (n > 9) n -= 9; } sum += n; });
-    return sum % 10 === 0;
-  };
-
   function validate() {
     const form = $('#checkoutForm');
     Utils.clearInvalid(form);
@@ -152,18 +140,7 @@
     const blankEngrave = OrderCalc.lines(Cart.items()).find(l => l.canEngrave && l.item.services.engrave && !String(l.item.services.engrave).trim());
     if (blankEngrave) { Utils.toast(`Vui lòng nhập nội dung khắc cho “${Utils.escape(blankEngrave.product.name)}” trong giỏ hàng.`, 'warning'); ok = false; }
 
-    let card = null;
-    if (state.payment === 'card') {
-      const num = $('#cNumber').value.replace(/\s/g, '');
-      if (!/^\d{16}$/.test(num) || !luhn(num)) fail($('#cNumber'), 'Số thẻ không hợp lệ.');
-      if ($('#cName').value.trim().length < 3) fail($('#cName'), 'Vui lòng nhập tên chủ thẻ.');
-      const m = $('#cExp').value.match(/^(\d{2})\/(\d{2})$/);
-      const expOk = m && +m[1] >= 1 && +m[1] <= 12 && new Date(2000 + +m[2], +m[1], 0, 23, 59) >= new Date();
-      if (!expOk) fail($('#cExp'), 'Ngày hết hạn không hợp lệ.');
-      if (!/^\d{3,4}$/.test($('#cCvv').value)) fail($('#cCvv'), 'CVV gồm 3–4 chữ số.');
-      card = { last4: num.slice(-4), brand: num[0] === '4' ? 'Visa' : num[0] === '5' ? 'Mastercard' : 'ATM' };
-    }
-    return ok ? { shipping, card } : null;
+    return ok ? { shipping } : null;
   }
 
   $('#checkoutForm').addEventListener('submit', e => {
@@ -172,11 +149,11 @@
     if (!v) return;
     const btn = $('#placeBtn');
     btn.disabled = true;
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${state.payment === 'card' ? 'Đang xử lý thanh toán…' : 'Đang đặt hàng…'}`;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang đặt hàng…';
     setTimeout(() => {
       const r = Orders.place({
         items: Cart.items(), shipping: v.shipping, shippingMethod: state.shippingMethod,
-        paymentMethod: state.payment, couponCode: state.coupon, note: $('#note').value, card: v.card
+        paymentMethod: state.payment, couponCode: state.coupon, note: $('#note').value
       });
       if (!r.ok) {
         Utils.toast(r.error, 'error');
@@ -192,7 +169,7 @@
       Cart.clear();
       Draft.clear();
       location.replace('dat-hang-thanh-cong.html?id=' + r.order.id);
-    }, state.payment === 'card' ? 1200 : 500);
+    }, 500);
   });
 
   renderAll();

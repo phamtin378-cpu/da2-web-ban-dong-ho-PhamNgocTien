@@ -1,4 +1,4 @@
-// Dữ liệu sản phẩm mẫu (90 sản phẩm).
+// Dữ liệu sản phẩm mẫu (khai báo 90, chỉ giữ 27 sản phẩm có ảnh thật – xem KEEP_WITH_PHOTO ở cuối file).
 // Mỗi dòng: a(danhMucCon, thuongHieu, ten, giaGoc, giaBan|null, 'thong|so|theo|thu|tu', tuyChon)
 // Thứ tự thông số khai báo trong SPEC_ORDER theo danh mục cha.
 (function () {
@@ -205,5 +205,12 @@
   a('pin', 'timehouse', 'Pin Panasonic CR2032 vỉ 5 viên', 90000, null, 'Pin|Lithium|CR2032|Nhật Bản|Bạc|Tròn', { stock: 150, sold: 420 });
   a('may-kim', 'rhythm', 'Máy kim trôi treo tường Rhythm', 290000, null, 'Bộ máy thay thế|Nhựa ABS|Trục 16 mm|Nhật Bản|Đen|Vuông');
 
-  window.SEED_PRODUCTS = list;
+  // Chỉ giữ các sản phẩm đã có ảnh thật (assets/img/san-pham/<id>.jpg).
+  // Không xóa dòng a(...) ở trên: mã sản phẩm đánh theo thứ tự dòng, xóa sẽ làm lệch mã của đơn hàng, đánh giá…
+  const KEEP_WITH_PHOTO = ['p001', 'p003', 'p010', 'p015', 'p021', 'p026', 'p027', 'p035', 'p043', 'p044', 'p046', 'p047', 'p049', 'p050',
+    'p052', 'p061', 'p066', 'p068', 'p070', 'p071', 'p074', 'p075', 'p076', 'p077', 'p078', 'p081', 'p088'];
+  window.SEED_PRODUCTS_ALL = list; // đơn hàng mẫu cũ vẫn tham chiếu tên/giá các sản phẩm đã bỏ
+  window.SEED_PRODUCT_PHOTO = id => 'assets/img/san-pham/' + id + '.jpg';
+  window.SEED_PRODUCTS = list.filter(p => KEEP_WITH_PHOTO.includes(p.id))
+    .map(p => Object.assign(p, { images: [window.SEED_PRODUCT_PHOTO(p.id)] }));
 })();

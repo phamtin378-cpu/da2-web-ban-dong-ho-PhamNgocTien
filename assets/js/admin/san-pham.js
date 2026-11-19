@@ -135,7 +135,7 @@
   function paintImages() {
     $$('#pImages .rv-thumb').forEach(x => x.remove());
     $('#pImages').insertAdjacentHTML('afterbegin', form.images.map((src, i) =>
-      `<div class="rv-thumb"><img src="${src}" alt=""><button type="button" data-i="${i}" aria-label="Xóa ảnh"><i class="bi bi-x"></i></button></div>`).join(''));
+      `<div class="rv-thumb"><img src="${/^(data:|https?:|\/|\.\.\/)/.test(src) ? src : ROOT + src}" alt=""><button type="button" data-i="${i}" aria-label="Xóa ảnh"><i class="bi bi-x"></i></button></div>`).join(''));
     $('#pImages .rv-upload-btn').hidden = form.images.length >= 5;
   }
   function openForm(p) {

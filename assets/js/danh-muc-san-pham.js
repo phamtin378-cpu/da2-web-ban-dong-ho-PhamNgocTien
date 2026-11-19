@@ -326,7 +326,8 @@ const Img = (() => {
   }
 
   // Ảnh thật do quản trị viên tải lên (Sản phẩm → Sửa → Tải ảnh); chưa có thì dùng ảnh minh họa tự vẽ
-  const photos = p => p.images || [];
+  // Ảnh có thể là data URL (tải lên) hoặc đường dẫn file trong project (assets/img/san-pham/...) → thêm ROOT cho trang trong admin/
+  const photos = p => (p.images || []).map(s => /^(data:|https?:|\/|\.\.\/)/.test(s) ? s : ROOT + s);
 
   const cache = {};
   return {

@@ -29,11 +29,9 @@
       start: iso(0, 0, 0), end: iso(0, 23, 59),
       items: [
         { productId: 'p001', salePrice: 1390000, quota: 20, sold: 13 },
-        { productId: 'p017', salePrice: 790000, quota: 15, sold: 6 },
         { productId: 'p043', salePrice: 749000, quota: 30, sold: 24 },
         { productId: 'p050', salePrice: 359000, quota: 25, sold: 9 },
-        { productId: 'p070', salePrice: 399000, quota: 20, sold: 17 },
-        { productId: 'p086', salePrice: 490000, quota: 10, sold: 3 }
+        { productId: 'p070', salePrice: 399000, quota: 20, sold: 17 }
       ],
       description: 'Giá sốc trong ngày, số lượng có hạn.'
     },

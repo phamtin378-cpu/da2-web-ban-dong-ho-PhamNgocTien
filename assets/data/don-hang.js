@@ -1,6 +1,6 @@
 // Đơn hàng mẫu (phục vụ lịch sử đơn của khách và báo cáo doanh thu). Cần nạp sau san-pham.js & nguoi-dung.js.
 (function () {
-  const products = window.SEED_PRODUCTS;
+  const products = window.SEED_PRODUCTS_ALL || window.SEED_PRODUCTS;
   const users = window.SEED_USERS.filter(u => u.role === 'customer' && u.addresses.length);
   const byId = id => products.find(p => p.id === id);
   let seed = 4242;
@@ -34,17 +34,16 @@
       history.push({ status: 'cancelled', at: new Date(t + 3600000).toISOString(), by: user.id, byName: user.name, note: 'Khách đổi ý' });
     }
     const addr = user.addresses[0];
-    const payment = extra.payment || pick(['cod', 'cod', 'bank', 'bank']);
+    const payment = extra.payment || pick(['cod', 'cod', 'bank', 'card']);
     const d = created;
     const code = 'DH' + String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + String(n).padStart(3, '0');
     return {
       id: code, userId: user.id, items: lines,
       shipping: { name: addr.name, phone: addr.phone, province: addr.province, ward: addr.ward, street: addr.street },
       shippingMethod: 'standard', paymentMethod: payment,
-      // COD: trả khi nhận hàng; chuyển khoản: đơn còn chờ xác nhận coi như chưa nhận tiền; thẻ: trả ngay
-      paymentStatus: status === 'cancelled'
-        ? (payment === 'card' ? 'refunded' : 'unpaid')
-        : status === 'completed' || payment === 'card' || (payment === 'bank' && status !== 'pending') ? 'paid' : 'unpaid',
+      // COD: trả khi nhận hàng; chuyển khoản: đơn còn chờ xác nhận coi như chưa nhận tiền
+      paymentStatus: status === 'cancelled' ? 'unpaid'
+        : status === 'completed' || (payment === 'bank' && status !== 'pending') ? 'paid' : 'unpaid',
       subtotal, couponCode: extra.couponCode || null, couponDiscount, shippingFee, serviceFee,
       total: subtotal - couponDiscount + shippingFee + serviceFee,
       gifts: [], note: extra.note || '', status, history, createdAt: created.toISOString()
@@ -76,7 +75,8 @@
     orders.push(make(i, pick(users), items, days, status));
   }
   orders.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  window.SEED_ORDERS = orders;
+  // Cửa hàng không nhận thanh toán thẻ → bỏ các đơn mẫu thẻ (vẫn giữ 'card' ở pick để các đơn còn lại không đổi)
+  window.SEED_ORDERS = orders.filter(o => o.paymentMethod !== 'card');
 
   window.SEED_CONTACTS = [
     { id: 'lh1', name: 'Ngô Bảo Châu', email: 'chau@gmail.com', phone: '0933222111', subject: 'Bảo hành đồng hồ',

@@ -42,10 +42,67 @@ const DB = (() => {
     rawSet(key, JSON.stringify(value));
   }
 
+  // Cửa hàng đã ngừng nhận thanh toán thẻ: xóa hẳn các đơn thanh toán bằng thẻ.
+  // CARD_SEED_NO: số thứ tự (3 số cuối mã đơn) của các đơn mẫu từng là đơn thẻ – dùng cho dữ liệu
+  // đã bị bản cập nhật trước chuyển sang "chuyển khoản". Đơn mẫu nhận biết qua dòng hàng không có sku.
+  const CARD_SEED_NO = ['013', '016', '018', '020', '021', '035', '038', '045', '057', '059'];
+  function removeCardOrders() {
+    const orders = get('orders', null);
+    if (!Array.isArray(orders)) return;
+    const isCard = o => o.paymentMethod === 'card' || !!o.card ||
+      (o.items.every(it => !it.sku) && CARD_SEED_NO.includes(String(o.id).slice(-3)));
+    const kept = orders.filter(o => !isCard(o));
+    if (kept.length !== orders.length) set('orders', kept);
+  }
+
+  // Thu gọn danh mục sản phẩm (chạy 1 lần): xóa sản phẩm mẫu đã bỏ khỏi dữ liệu mẫu NẾU chưa có ảnh;
+  // sản phẩm giữ lại mà chưa có ảnh thì gán ảnh trong project. Dọn đánh giá, hỏi đáp, flash sale, bài viết liên quan.
+  function pruneProducts() {
+    const FLAG = 'mig_prune_products_v1';
+    if (get(FLAG) || !window.SEED_PRODUCTS_ALL || !window.SEED_PRODUCTS) return;
+    const products = get('products', null);
+    if (!Array.isArray(products)) return;
+    const keep = new Set(window.SEED_PRODUCTS.map(p => p.id));
+    const dropped = new Set(window.SEED_PRODUCTS_ALL.map(p => p.id).filter(id => !keep.has(id)));
+    const hasImg = p => Array.isArray(p.images) && p.images.length > 0;
+
+    const left = products.filter(p => !(dropped.has(p.id) && !hasImg(p)));
+    left.forEach(p => { if (keep.has(p.id) && !hasImg(p)) p.images = [window.SEED_PRODUCT_PHOTO(p.id)]; });
+    set('products', left);
+    const alive = new Set(left.map(p => p.id));
+
+    ['reviews', 'questions'].forEach(k => {
+      const list = get(k, null);
+      if (Array.isArray(list)) set(k, list.filter(x => alive.has(x.productId)));
+    });
+    const promos = get('promotions', null);
+    if (Array.isArray(promos)) {
+      promos.forEach(pr => {
+        if (Array.isArray(pr.items)) pr.items = pr.items.filter(i => alive.has(i.productId));
+        if (pr.scope && pr.scope.type === 'products') pr.scope.ids = pr.scope.ids.filter(id => alive.has(id));
+      });
+      set('promotions', promos);
+    }
+    const posts = get('posts', null);
+    if (Array.isArray(posts)) {
+      const seedPosts = window.SEED_POSTS || [];
+      posts.forEach(p => {
+        if (p.coverProduct && !alive.has(p.coverProduct)) {
+          const s = seedPosts.find(x => x.id === p.id);
+          p.coverProduct = s && alive.has(s.coverProduct) ? s.coverProduct : null;
+        }
+      });
+      set('posts', posts);
+    }
+    set(FLAG, true);
+  }
+
   function init(force = false) {
     if (!force && get('version') === SEED_VERSION) {
       // Bổ sung collection còn thiếu (ví dụ trang chỉ nạp một phần dữ liệu ở lần trước)
       Object.keys(SEEDS).forEach(k => { if (rawGet(k) === null && SEEDS[k]()) set(k, SEEDS[k]()); });
+      removeCardOrders();
+      pruneProducts();
       return;
     }
     Object.keys(SEEDS).forEach(k => {

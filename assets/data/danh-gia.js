@@ -55,7 +55,10 @@
     status: r[8], reply: r[9],
     helpful: Array.from({ length: r[10] }, (_, k) => 'seed-' + k),
     reports: i === rows.length - 1 ? ['u-x1', 'u-x2', 'u-x3'] : []
-  }));
+  }))
+  // Bỏ đánh giá / hỏi đáp của sản phẩm không còn kinh doanh (mã rv giữ nguyên)
+  const alive = new Set(window.SEED_PRODUCTS.map(p => p.id));
+  window.SEED_REVIEWS = window.SEED_REVIEWS.filter(r => alive.has(r.productId));
 
   window.SEED_QUESTIONS = [
     { id: 'q1', productId: 'p005', userId: 'u-x1', userName: NAMES['u-x1'], content: 'Đồng hồ này có lên cót tay được không shop?',
@@ -70,5 +73,5 @@
       createdAt: ago(6), answer: { byName: 'TIMEHOUSE', content: 'Dạ Apple Watch chỉ kết nối với iPhone ạ. Nếu dùng Android anh tham khảo Samsung Galaxy Watch7 nhé.', at: ago(6) } },
     { id: 'q6', productId: 'p050', userId: 'u-c1', userName: NAMES['u-c1'], content: 'Có bản màu đen không shop?',
       createdAt: ago(2), answer: null }
-  ];
+  ].filter(q => alive.has(q.productId));
 })();

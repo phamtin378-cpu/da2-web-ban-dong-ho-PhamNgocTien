@@ -17,8 +17,6 @@
 
 > Có thể mở trực tiếp file `index.html`, nhưng nên dùng Live Server để mọi tính năng (clipboard…) hoạt động ổn định.
 
-**Khôi phục dữ liệu mẫu:** đăng nhập Admin → *Hồ sơ cá nhân* → *Khôi phục dữ liệu mẫu*, hoặc gõ `DB.reset()` trong Console.
-
 ## Tài khoản dùng thử (mật khẩu `123456`)
 
 | Vai trò | Email | Ghi chú |
@@ -38,8 +36,8 @@
 - Danh sách sản phẩm: bộ lọc **thay đổi theo loại đồng hồ** (đeo tay: loại máy, mặt kính, chống nước…; treo tường: khung, phong cách, phòng…), lọc giá/thương hiệu/đánh giá, sắp xếp, phân trang, lọc lưu trên URL
 - Chi tiết sản phẩm: ảnh phóng to, giá khuyến mãi tốt nhất, quà tặng, dịch vụ kèm theo, thông số, bảo hành
 - **Đánh giá & nhận xét**: sao, ảnh thực tế, thẻ nhanh, "Đã mua hàng", hữu ích, báo cáo vi phạm, phản hồi của cửa hàng, hỏi đáp
-- Giỏ hàng: khắc tên, gói quà, lắp đặt tại nhà; mã giảm giá; quà tặng tự áp dụng
-- Thanh toán: sổ địa chỉ (34 tỉnh/thành, 2 cấp), giao tiêu chuẩn/hỏa tốc, COD / chuyển khoản QR / thẻ
+- Giỏ hàng: khắc tên, gói quà, mã giảm giá; quà tặng tự áp dụng
+- Thanh toán: sổ địa chỉ (34 tỉnh/thành, 2 cấp), COD / chuyển khoản QR 
 - Tài khoản: hồ sơ, đơn hàng (dòng thời gian, hủy đơn, mua lại), đánh giá của tôi, ví mã giảm giá, sổ địa chỉ, đổi mật khẩu
 - Danh sách yêu thích
 - Trang nội dung: khuyến mãi, tin tức, giới thiệu, liên hệ (kèm danh sách showroom), chính sách, FAQ
@@ -49,7 +47,7 @@
 |---|:-:|:-:|
 | Tổng quan – việc cần xử lý | ✔ | ✔ |
 | Báo cáo doanh thu, biểu đồ | – | ✔ |
-| Đơn hàng (xử lý trạng thái, in hóa đơn, xuất CSV) | ✔ | ✔ |
+| Đơn hàng (xử lý trạng thái, in hóa đơn, | ✔ | ✔ |
 | Sản phẩm (thêm/sửa, tồn kho) / xóa | ✔ / – | ✔ |
 | Danh mục & thương hiệu | – | ✔ |
 | Khuyến mãi (4 loại chương trình) | xem | ✔ |
@@ -89,4 +87,4 @@
 
 - Ảnh sản phẩm, danh mục, bài viết mặc định là **ảnh minh họa SVG tự sinh**. Thêm ảnh thật trong trang quản trị: *Sản phẩm → Sửa → Tải ảnh*, *Danh mục & thương hiệu → Danh mục → Sửa → Ảnh đại diện*, *Bài viết → Sửa → Ảnh bìa*. Ảnh được lưu trong trình duyệt (localStorage) nên chỉ hiện trên máy đã tải lên.
 - Banner trang chủ: sửa danh sách `HOME_BANNERS` ở đầu `assets/js/pages/trang-chu.js`.
-- Đây là dự án mô phỏng: mật khẩu lưu dạng thô, thanh toán thẻ/QR không thực hiện giao dịch thật.
+- Đây là dự án mô phỏng: mật khẩu lưu dạng thô, thanh toán/QR không thực hiện giao dịch thật.

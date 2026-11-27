@@ -83,7 +83,7 @@ const Catalog = {
 /* ================= KHUYẾN MÃI ================= */
 const Promo = {
   STATUS_LABEL: { upcoming: 'Sắp diễn ra', running: 'Đang diễn ra', ended: 'Đã kết thúc', paused: 'Tạm dừng' },
-  TYPE_LABEL: { discount: 'Giảm giá sản phẩm', flashsale: 'Flash sale', coupon: 'Mã giảm giá', gift: 'Quà tặng kèm' },
+  TYPE_LABEL: { flashsale: 'Flash sale', coupon: 'Mã giảm giá' },
 
   all: () => DB.all('promotions'),
 
@@ -98,28 +98,10 @@ const Promo = {
     return Promo.all().filter(p => (!type || p.type === type) && Promo.status(p) === 'running');
   },
 
-  inScope(product, scope) {
-    if (!scope || scope.type === 'all') return true;
-    if (scope.type === 'products') return scope.ids.includes(product.id);
-    if (scope.type === 'brands') return scope.ids.includes(product.brandId);
-    if (scope.type === 'categories') {
-      const parent = Catalog.parentOf(product.categoryId);
-      return scope.ids.includes(product.categoryId) || (parent && scope.ids.includes(parent.id));
-    }
-    return false;
-  },
-
-  // Sản phẩm có thuộc chương trình không
+  // Sản phẩm có thuộc chương trình không (dùng cho link 'Xem sản phẩm' của flash sale)
   covers(pr, p) {
     if (pr.type === 'flashsale') return pr.items.some(i => i.productId === p.id);
-    if (pr.type === 'coupon') return true;
-    return Promo.inScope(p, pr.scope);
-  },
-
-  applyDiscount(base, pr) {
-    let off = pr.discountType === 'percent' ? base * pr.value / 100 : pr.value;
-    if (pr.maxDiscount) off = Math.min(off, pr.maxDiscount);
-    return Math.max(0, Math.round((base - off) / 1000) * 1000); // làm tròn đến nghìn đồng
+    return true;
   },
 
   flashItem(productId) {
@@ -130,29 +112,18 @@ const Promo = {
     return null;
   },
 
-  // Quà tặng áp dụng cho 1 sản phẩm (hiển thị trên trang chi tiết)
-  giftsFor(product) {
-    const price = Pricing.get(product).price;
-    return Promo.running('gift').filter(g => Promo.inScope(product, g.scope) && price >= (g.minItemPrice || 0));
-  },
-
   coupon(code) {
     return Promo.all().find(p => p.type === 'coupon' && p.code.toUpperCase() === String(code).trim().toUpperCase()) || null;
   }
 };
 
 /* ================= GIÁ BÁN ================= */
-// Quy tắc: 1 sản phẩm chỉ áp dụng mức giá thấp nhất trong (giá bán thường, các CT giảm giá, flash sale).
+// Quy tắc: giá flash sale (nếu sản phẩm đang có flash sale và còn suất), nếu không thì giá khuyến mãi của sản phẩm, cuối cùng là giá gốc.
 const Pricing = {
   // noFlash: bỏ qua flash sale (khi số lượng mua vượt số suất còn lại)
   get(p, { noFlash = false } = {}) {
     const original = p.price;
     let best = { price: p.salePrice || p.price, source: p.salePrice ? 'sale' : 'base', promo: null };
-    Promo.running('discount').forEach(pr => {
-      if (!Promo.inScope(p, pr.scope)) return;
-      const v = Promo.applyDiscount(original, pr);
-      if (v < best.price) best = { price: v, source: 'promo', promo: pr };
-    });
     const fs = noFlash ? null : Promo.flashItem(p.id);
     if (fs && fs.item.salePrice < best.price) {
       best = { price: fs.item.salePrice, source: 'flash', promo: fs.promo, flash: fs.item };
@@ -389,10 +360,10 @@ function productCard(p) {
 }
 
 /* ================= THẺ BÀI VIẾT ================= */
-// Ảnh bìa: ảnh thật nếu có, nếu không lấy ảnh minh họa của sản phẩm liên quan (coverProduct) hoặc sản phẩm nổi bật
+// Ảnh bìa: ảnh thật nếu có, nếu không lấy ảnh minh họa của sản phẩm liên quan (coverProduct) hoặc một sản phẩm bất kỳ
 function postCover(post) {
   if (post.image) return post.image;
-  const pool = Catalog.products().filter(p => p.featured);
+  const pool = Catalog.products();
   const p = (post.coverProduct && Catalog.product(post.coverProduct)) ||
     pool[[...post.id].reduce((s, c) => s + c.charCodeAt(0), 0) % pool.length];
   return Img.product(p, 1);

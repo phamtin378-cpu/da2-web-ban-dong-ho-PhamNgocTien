@@ -1,4 +1,4 @@
-// Quản lý đơn hàng: lọc, xem chi tiết, chuyển trạng thái, xác nhận thanh toán, in hóa đơn, xuất CSV.
+// Quản lý đơn hàng: lọc, xem chi tiết, chuyển trạng thái, xác nhận thanh toán, in hóa đơn.
 (function () {
   if (!Admin.init('orders', 'Đơn hàng')) return;
   const fp = Utils.formatPrice;
@@ -21,7 +21,6 @@
         </select>
         <input type="date" class="form-control" id="fFrom" aria-label="Từ ngày" style="max-width:160px">
         <input type="date" class="form-control" id="fTo" aria-label="Đến ngày" style="max-width:160px">
-        <button class="btn btn-outline-dark" id="exportBtn"><i class="bi bi-download me-1"></i>Xuất CSV</button>
       </div>
       <div class="table-responsive"><table class="table admin-table align-middle">
         <thead><tr><th>Mã đơn</th><th>Ngày đặt</th><th>Khách hàng</th><th class="text-center">SL</th><th class="text-end">Tổng tiền</th><th>Thanh toán</th><th>Trạng thái</th><th></th></tr></thead>
@@ -105,13 +104,12 @@
           const p = Catalog.product(it.productId);
           return `<tr><td><div class="d-flex align-items-center gap-2">${p ? `<img src="${Img.product(p)}" alt="" width="44" height="44" class="rounded-2">` : ''}
             <div><div class="fw-medium">${Utils.escape(it.name)}</div><div class="small text-muted">${it.sku || it.productId}${it.priceSource === 'flash' ? ' · Flash sale' : ''}</div></div></div></td>
-            <td class="small">${[it.services.engrave ? `Khắc: “${Utils.escape(it.services.engrave)}”` : '', it.services.giftWrap ? 'Gói quà' : '', it.services.install ? 'Lắp đặt' : ''].filter(Boolean).join('<br>') || '—'}</td>
+            <td class="small">${[it.services.engrave ? `Khắc: “${Utils.escape(it.services.engrave)}”` : '', it.services.giftWrap ? 'Gói quà' : ''].filter(Boolean).join('<br>') || '—'}</td>
             <td class="text-end">${fp(it.price)}${it.originalPrice > it.price ? `<div class="small text-muted"><s>${fp(it.originalPrice)}</s></div>` : ''}</td>
             <td class="text-center">${it.qty}</td><td class="text-end fw-semibold">${fp(it.price * it.qty)}</td></tr>`;
         }).join('')}</tbody></table></div>
       <div class="row g-3">
         <div class="col-md-6">
-          ${o.gifts && o.gifts.length ? `<div class="gift-box mt-0 mb-3"><i class="bi bi-gift me-1"></i>Quà tặng kèm: ${o.gifts.map(Utils.escape).join('; ')}</div>` : ''}
           <div class="ib-title">Lịch sử xử lý</div>
           <ul class="history-list">${o.history.slice().reverse().map(h => `<li><span class="text-muted">${Utils.formatDate(h.at, true)}</span> · <strong>${Orders.STATUS[h.status].label}</strong> · ${Utils.escape(h.byName)}${h.note ? ` <span class="text-muted">– ${Utils.escape(h.note)}</span>` : ''}</li>`).join('')}</ul>
         </div>
@@ -188,11 +186,6 @@
       Utils.toast(`Đã ghi nhận thanh toán cho đơn ${id}.`);
       render(); openOrder(id);
     } else if (e.target.closest('.js-print')) printInvoice(id);
-  });
-  $('#exportBtn').addEventListener('click', () => {
-    const rows = filtered().map(o => [o.id, Utils.formatDate(o.createdAt, true), o.shipping.name, o.shipping.phone, Address.format(o.shipping),
-      o.items.map(i => `${i.name} x${i.qty}`).join('; '), o.total, PAYMENT_METHODS[o.paymentMethod].label, Orders.PAYMENT_STATUS[o.paymentStatus], Orders.STATUS[o.status].label]);
-    Admin.exportCsv(`don-hang-${new Date().toISOString().slice(0, 10)}.csv`, ['Mã đơn', 'Ngày', 'Khách', 'SĐT', 'Địa chỉ', 'Sản phẩm', 'Tổng tiền', 'Thanh toán', 'TT thanh toán', 'Trạng thái'], rows);
   });
 
   render();

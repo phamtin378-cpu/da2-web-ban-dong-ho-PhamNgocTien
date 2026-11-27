@@ -66,8 +66,8 @@ $('#hotGrid').innerHTML = Catalog.query({ sort: 'bestseller' })
 // Banner đôi
 (function promoTiles() {
   const tiles = [
-    { cat: 'treo-tuong', eyebrow: 'Giảm đến 15%', title: 'Đồng hồ treo tường', text: 'Kim trôi êm ái, thiết kế Bắc Âu, gỗ tự nhiên.', dark: false },
-    { cat: 'dong-ho-cay', eyebrow: 'Miễn phí lắp đặt', title: 'Đồng hồ cây cao cấp', text: 'Bộ máy cơ Đức, chuông Westminster vang trầm.', dark: true }
+    { cat: 'treo-tuong', eyebrow: 'Trang trí không gian', title: 'Đồng hồ treo tường', text: 'Kim trôi êm ái, thiết kế Bắc Âu, gỗ tự nhiên.', dark: false },
+    { cat: 'dong-ho-cay', eyebrow: 'Bộ sưu tập cao cấp', title: 'Đồng hồ cây cao cấp', text: 'Bộ máy cơ Đức, chuông Westminster vang trầm.', dark: true }
   ];
   $('#promoTiles').innerHTML = tiles.map(t => {
     const p = Catalog.query({ cat: t.cat, sort: 'bestseller' })[0];

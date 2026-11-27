@@ -11,8 +11,7 @@ const PERMS = {
   reviews: ['staff', 'admin'],
   contacts: ['staff', 'admin'],
   customers: ['staff', 'admin'],    // nhân viên chỉ xem
-  staff: ['admin'],
-  profile: ['staff', 'admin']
+  staff: ['admin']
 };
 // Quyền theo hành động
 const ACTIONS = {
@@ -36,15 +35,14 @@ const Admin = {
     ['contacts', 'bi-envelope', 'Liên hệ'],
     ['posts', 'bi-newspaper', 'Bài viết'],
     ['customers', 'bi-people', 'Khách hàng'],
-    ['staff', 'bi-person-badge', 'Nhân viên'],
-    ['profile', 'bi-person-gear', 'Hồ sơ cá nhân']
+    ['staff', 'bi-person-badge', 'Nhân viên']
   ],
 
   // Mã trang -> tên file
   FILES: {
     dashboard: 'tong-quan', orders: 'don-hang', products: 'san-pham', brands: 'thuong-hieu',
     promotions: 'khuyen-mai', reviews: 'danh-gia', contacts: 'lien-he', posts: 'bai-viet',
-    customers: 'khach-hang', staff: 'nhan-vien', profile: 'ho-so'
+    customers: 'khach-hang', staff: 'nhan-vien'
   },
 
   badges() {
@@ -78,7 +76,6 @@ const Admin = {
             <span class="d-none d-sm-inline text-start lh-sm"><span class="d-block small fw-semibold">${Utils.escape(u.name)}</span><span class="d-block small text-muted">${Auth.ROLES[u.role]}</span></span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><a class="dropdown-item" href="ho-so.html"><i class="bi bi-person-gear me-2"></i>Hồ sơ cá nhân</a></li>
             <li><a class="dropdown-item" href="../index.html" target="_blank" rel="noopener"><i class="bi bi-shop me-2"></i>Xem cửa hàng</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><button class="dropdown-item" id="adminLogout"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</button></li>
@@ -118,17 +115,6 @@ const Admin = {
     if (!p.total) return '';
     return `<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
       <div class="small text-muted">Hiển thị ${(p.page - 1) * per + 1}–${Math.min(p.page * per, p.total)} / ${p.total}</div>${Utils.pagination(p.page, p.pages)}</div>`;
-  },
-
-  // Xuất CSV (mở được bằng Excel, có BOM để hiển thị tiếng Việt)
-  exportCsv(filename, header, rows) {
-    const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
-    const csv = '﻿' + [header].concat(rows).map(r => r.map(esc).join(',')).join('\r\n');
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-    a.download = filename;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   },
 
   // Lọc HTML do nhân viên nhập (bài viết): chỉ giữ thẻ & thuộc tính an toàn

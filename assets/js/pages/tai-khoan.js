@@ -183,7 +183,7 @@
         <div class="summary-title">Sản phẩm</div>
         ${o.items.map(it => {
           const p = Catalog.product(it.productId);
-          const extras = [it.services.engrave ? `Khắc: “${Utils.escape(it.services.engrave)}”` : '', it.services.giftWrap ? 'Gói quà' : '', it.services.install ? 'Lắp đặt tại nhà' : ''].filter(Boolean);
+          const extras = [it.services.engrave ? `Khắc: “${Utils.escape(it.services.engrave)}”` : '', it.services.giftWrap ? 'Gói quà' : ''].filter(Boolean);
           return `<div class="od-item">
             <a href="${p ? Catalog.url(p) : '#'}" class="cart-img">${p ? `<img src="${Img.product(p)}" alt="">` : ''}</a>
             <div class="flex-grow-1 min-w-0">
@@ -198,7 +198,6 @@
                 : `<a class="btn btn-sm btn-outline-dark mt-1" href="chi-tiet-san-pham.html?id=${it.productId}#write-review">Đánh giá</a>`) : ''}
             </div></div>`;
         }).join('')}
-        ${o.gifts && o.gifts.length ? `<div class="gift-box"><i class="bi bi-gift me-1"></i>Quà tặng: ${o.gifts.map(Utils.escape).join('; ')}</div>` : ''}
         <dl class="summary-rows mb-0 ms-auto" style="max-width:360px">
           <div><dt>Tạm tính</dt><dd>${Utils.formatPrice(o.subtotal)}</dd></div>
           ${o.serviceFee ? `<div><dt>Dịch vụ kèm theo</dt><dd>${Utils.formatPrice(o.serviceFee)}</dd></div>` : ''}

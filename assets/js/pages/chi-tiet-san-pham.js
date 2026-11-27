@@ -29,15 +29,8 @@
       `<button type="button" data-i="${i}" aria-label="Ảnh ${i + 1}"><img src="${Img.product(p, i)}" alt=""></button>`).join('');
     $('#pdThumbs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) set(+b.dataset.i); });
     set(0);
-    // Phóng to theo vị trí chuột
-    const box = $('#pdMainImg');
-    box.addEventListener('mousemove', e => {
-      const r = box.getBoundingClientRect();
-      main.style.transformOrigin = `${(e.clientX - r.left) / r.width * 100}% ${(e.clientY - r.top) / r.height * 100}%`;
-      box.classList.add('zoom');
-    });
-    box.addEventListener('mouseleave', () => box.classList.remove('zoom'));
-    box.addEventListener('click', () => openLightbox(main.src));
+    // Bấm vào ảnh để xem ảnh lớn
+    $('#pdMainImg').addEventListener('click', () => openLightbox(main.src));
   })();
 
   function openLightbox(src) {
@@ -50,7 +43,6 @@
     const pr = Pricing.get(p);
     const rv = Reviews.stats(p.id);
     const out = p.stock <= 0;
-    const gifts = Promo.giftsFor(p);
     const wrist = ['deo-tay', 'bo-tui'].includes(parent.id);
     const keys = Catalog.filtersFor(p.categoryId).filter(k => p.specs[k] !== undefined).slice(0, 4);
     const liked = Wishlist.has(p.id);
@@ -79,7 +71,6 @@
         <span class="price-now">${Utils.formatPrice(pr.price)}</span>
         ${pr.percent ? `<span class="price-old">${Utils.formatPrice(pr.original)}</span><span class="badge-tag tag-sale">-${pr.percent}%</span>` : ''}
         ${pr.source === 'flash' ? `<div class="flash-bar mt-2 w-100"><span style="width:${Math.round(pr.flash.sold / pr.flash.quota * 100)}%"></span><em>Còn ${pr.flash.quota - pr.flash.sold}/${pr.flash.quota} suất</em></div>` : ''}
-        ${pr.source === 'promo' ? `<div class="small w-100 mt-1"><i class="bi bi-tag me-1"></i>Áp dụng: <a href="san-pham.html?promo=${pr.promo.id}" class="text-decoration-underline">${Utils.escape(pr.promo.name)}</a> · đến ${Utils.formatDate(pr.promo.end)}</div>` : ''}
       </div>
 
       <div class="pd-stock ${out ? 'out' : p.stock <= 5 ? 'low' : ''}">
@@ -89,14 +80,10 @@
 
       ${keys.length ? `<ul class="pd-highlights">${keys.map(k => `<li><span>${FILTER_DEFS[k].label}</span><strong>${[].concat(p.specs[k]).join(', ')}</strong></li>`).join('')}</ul>` : ''}
 
-      ${gifts.length ? `<div class="pd-box"><div class="pd-box-title"><i class="bi bi-gift"></i> Quà tặng & ưu đãi</div>
-        <ul class="mb-0">${gifts.map(g => `<li>${Utils.escape(g.gift)} <span class="text-muted-2">– ${Utils.escape(g.name)}</span></li>`).join('')}</ul></div>` : ''}
-
       <div class="pd-box"><div class="pd-box-title"><i class="bi bi-stars"></i> Dịch vụ kèm theo <span class="fw-normal text-muted-2">(chọn trong giỏ hàng)</span></div>
         <ul class="mb-0">
           ${wrist ? `<li>Khắc tên lên nắp lưng: ${Utils.formatPrice(S.engraveFee)}</li>` : ''}
           <li>Gói quà cao cấp kèm thiệp: ${Utils.formatPrice(S.giftWrapFee)}</li>
-          ${p.heavy ? `<li>Lắp đặt & cân chỉnh tại nhà: ${Utils.formatPrice(S.installFee)} · phụ phí vận chuyển hàng cồng kềnh ${Utils.formatPrice(S.heavyShipFee)}</li>` : ''}
         </ul></div>
 
       ${out ? `
@@ -114,14 +101,14 @@
           <button class="btn btn-dark btn-lg flex-fill" id="buyNowBtn">Mua ngay</button>
         </div>`}
       <div class="d-flex gap-4 mt-3 small pd-links">
-        <button class="btn btn-link p-0 text-dark js-wish${liked ? ' active' : ''}" data-id="${p.id}"><i class="bi ${liked ? 'bi-heart-fill' : 'bi-heart'}"></i> Yêu thích</button>        <button class="btn btn-link p-0 text-dark" id="shareBtn"><i class="bi bi-share"></i> Chia sẻ</button>
+        <button class="btn btn-link p-0 text-dark js-wish${liked ? ' active' : ''}" data-id="${p.id}"><i class="bi ${liked ? 'bi-heart-fill' : 'bi-heart'}"></i> Yêu thích</button>
       </div>
 
       <ul class="pd-commit">
         <li><i class="bi bi-patch-check"></i>Chính hãng 100%, đầy đủ hộp & sổ bảo hành</li>
         <li><i class="bi bi-shield-check"></i>Bảo hành ${p.warranty >= 12 ? p.warranty / 12 + ' năm' : p.warranty + ' tháng'} tại TIMEHOUSE</li>
         <li><i class="bi bi-arrow-repeat"></i>Đổi trả trong 7 ngày nếu lỗi nhà sản xuất</li>
-        <li><i class="bi bi-truck"></i>${p.heavy ? 'Giao hàng & lắp đặt bởi kỹ thuật viên' : `Miễn phí giao hàng đơn từ ${Utils.formatPrice(S.freeShipThreshold)}`}</li>
+        <li><i class="bi bi-truck"></i>Miễn phí giao hàng đơn từ ${Utils.formatPrice(S.freeShipThreshold)}</li>
       </ul>`;
 
     if (pr.source === 'flash') Utils.countdown($('#pdCountdown'), pr.promo.end, () => location.reload());
@@ -138,11 +125,6 @@
     $('#buyNowBtn')?.addEventListener('click', () => {
       const inCart = Cart.items().some(i => i.productId === p.id);
       if (inCart || Cart.add(p.id, +qty.value, { silent: true })) location.href = 'gio-hang.html';
-    });    $('#shareBtn').addEventListener('click', async () => {
-      try {
-        if (navigator.share) await navigator.share({ title: p.name, url: location.href });
-        else { await navigator.clipboard.writeText(location.href); Utils.toast('Đã sao chép liên kết sản phẩm.'); }
-      } catch { /* người dùng hủy chia sẻ */ }
     });
     $('.js-goto-reviews').addEventListener('click', e => { e.preventDefault(); gotoTab('#reviewTabBtn'); });
   }

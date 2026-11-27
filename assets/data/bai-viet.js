@@ -21,7 +21,7 @@ window.SEED_POSTS = [
     id: 'bv4', coverProduct: 'p076', slug: 'dong-ho-cay-gia-tri-suu-tam', title: 'Đồng hồ cây – món đồ nội thất mang giá trị sưu tầm',
     category: 'Trang trí', author: 'Quản trị viên', createdAt: '2026-08-15T09:00:00', status: 'published',
     excerpt: 'Từ Hermle đến Howard Miller: vì sao đồng hồ cây vẫn được giới chơi đồ cổ săn lùng?',
-    content: '<p>Đồng hồ cây (grandfather clock) xuất hiện từ thế kỷ 17 ở Anh. Bộ máy cơ với quả lắc dài và chuông điểm giờ Westminster tạo nên âm thanh đặc trưng.</p><p>Các thương hiệu Đức như <strong>Hermle</strong> nổi tiếng với bộ máy bền bỉ, còn <strong>Howard Miller</strong> (Mỹ) chú trọng tủ gỗ chạm khắc tinh xảo.</p><p>Khi mua, nên yêu cầu lắp đặt và cân chỉnh tại nhà để quả lắc chạy đúng nhịp.</p>'
+    content: '<p>Đồng hồ cây (grandfather clock) xuất hiện từ thế kỷ 17 ở Anh. Bộ máy cơ với quả lắc dài và chuông điểm giờ Westminster tạo nên âm thanh đặc trưng.</p><p>Các thương hiệu Đức như <strong>Hermle</strong> nổi tiếng với bộ máy bền bỉ, còn <strong>Howard Miller</strong> (Mỹ) chú trọng tủ gỗ chạm khắc tinh xảo.</p><p>Khi đặt đồng hồ, nên chọn vị trí sàn bằng phẳng và tránh nắng trực tiếp để quả lắc chạy đúng nhịp.</p>'
   },
   {
     id: 'bv5', coverProduct: 'p043', slug: 'smartwatch-hay-dong-ho-truyen-thong', title: 'Smartwatch hay đồng hồ truyền thống?',

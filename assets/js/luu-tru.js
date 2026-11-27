@@ -79,7 +79,6 @@ const DB = (() => {
     if (Array.isArray(promos)) {
       promos.forEach(pr => {
         if (Array.isArray(pr.items)) pr.items = pr.items.filter(i => alive.has(i.productId));
-        if (pr.scope && pr.scope.type === 'products') pr.scope.ids = pr.scope.ids.filter(id => alive.has(id));
       });
       set('promotions', promos);
     }
@@ -97,12 +96,21 @@ const DB = (() => {
     set(FLAG, true);
   }
 
+  // Khuyến mãi chỉ còn 2 loại: flash sale và mã giảm giá → xóa các chương trình loại cũ (giảm giá SP, quà tặng)
+  function removeOldPromos() {
+    const promos = get('promotions', null);
+    if (!Array.isArray(promos)) return;
+    const kept = promos.filter(p => p.type === 'flashsale' || p.type === 'coupon');
+    if (kept.length !== promos.length) set('promotions', kept);
+  }
+
   function init(force = false) {
     if (!force && get('version') === SEED_VERSION) {
       // Bổ sung collection còn thiếu (ví dụ trang chỉ nạp một phần dữ liệu ở lần trước)
       Object.keys(SEEDS).forEach(k => { if (rawGet(k) === null && SEEDS[k]()) set(k, SEEDS[k]()); });
       removeCardOrders();
       pruneProducts();
+      removeOldPromos();
       return;
     }
     Object.keys(SEEDS).forEach(k => {

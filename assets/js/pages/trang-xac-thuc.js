@@ -54,7 +54,7 @@
       if (!Utils.isEmail(input.value)) { Utils.setInvalid(input, 'Email không hợp lệ.'); return; }
       bootstrap.Modal.getInstance('#forgotModal').hide();
       const exists = DB.all('users').some(u => u.email.toLowerCase() === input.value.trim().toLowerCase());
-      Utils.toast(exists ? 'Đã gửi liên kết đặt lại mật khẩu tới email của bạn (mô phỏng).' : 'Email chưa được đăng ký.', exists ? 'success' : 'warning');
+      Utils.toast(exists ? 'Đã gửi liên kết đặt lại mật khẩu tới email của bạn.' : 'Email chưa được đăng ký.', exists ? 'success' : 'warning');
       input.value = '';
     });
   }

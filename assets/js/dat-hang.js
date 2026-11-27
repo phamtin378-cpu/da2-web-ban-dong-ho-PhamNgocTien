@@ -1,4 +1,4 @@
-// Tính tiền đơn hàng, mã giảm giá, quà tặng, đặt hàng & trạng thái đơn.
+// Tính tiền đơn hàng, mã giảm giá, đặt hàng & trạng thái đơn.
 // Dùng chung cho giỏ hàng, thanh toán, tài khoản và trang quản trị.
 
 // 34 tỉnh/thành sau sắp xếp đơn vị hành chính 2025 (mô hình 2 cấp: tỉnh → phường/xã)
@@ -43,19 +43,9 @@ const OrderCalc = {
       return {
         item, product: p, price: pr, qty: item.qty, issue, flashNote,
         canEngrave: ['deo-tay', 'bo-tui'].includes(parent.id),
-        canInstall: !!p.heavy,
         total: pr.price * item.qty, originalTotal: pr.original * item.qty
       };
     }).filter(Boolean);
-  },
-
-  // Quà tặng đang áp dụng cho giỏ
-  gifts(lines, subtotal) {
-    return Promo.running('gift').filter(g => {
-      if (subtotal < (g.minOrder || 0)) return false;
-      if (g.scope.type === 'all' && !g.minItemPrice) return lines.length > 0;
-      return lines.some(l => Promo.inScope(l.product, g.scope) && l.price.price >= (g.minItemPrice || 0));
-    });
   },
 
   // Số lần khách đã dùng 1 mã (đơn chưa hủy)
@@ -87,33 +77,27 @@ const OrderCalc = {
     const valid = lines.filter(l => !l.issue);
     const subtotal = valid.reduce((s, l) => s + l.total, 0);
     const originalTotal = valid.reduce((s, l) => s + l.originalTotal, 0);
-    const gifts = OrderCalc.gifts(valid, subtotal);
-    const free = new Set(gifts.flatMap(g => g.freeServices || []));
-
-    let engrave = 0, giftWrap = 0, install = 0;
+    // Dịch vụ kèm theo: khắc tên (đồng hồ đeo tay, bỏ túi) và gói quà, tính theo số lượng
+    let engrave = 0, giftWrap = 0;
     valid.forEach(l => {
       const s = l.item.services || {};
       if (l.canEngrave && s.engrave) engrave += S.engraveFee * l.qty;
       if (s.giftWrap) giftWrap += S.giftWrapFee * l.qty;
-      if (l.canInstall && s.install) install += S.installFee * l.qty;
     });
-    const services = {
-      engrave, giftWrap, install,
-      engraveFree: free.has('engrave') && engrave > 0, giftWrapFree: free.has('giftWrap') && giftWrap > 0
-    };
-    const serviceFee = (services.engraveFree ? 0 : engrave) + (services.giftWrapFree ? 0 : giftWrap) + install;
+    const services = { engrave, giftWrap };
+    const serviceFee = engrave + giftWrap;
 
-    const heavy = valid.some(l => l.product.heavy);
+    // Phí vận chuyển: miễn phí khi đạt ngưỡng, giao nhanh cộng thêm phụ phí
     const baseShip = subtotal >= S.freeShipThreshold ? 0 : S.shipFee;
-    const shippingFee = valid.length ? baseShip + (heavy ? S.heavyShipFee : 0) + (shippingMethod === 'express' ? S.expressFee : 0) : 0;
+    const shippingFee = valid.length ? baseShip + (shippingMethod === 'express' ? S.expressFee : 0) : 0;
 
     const coupon = couponCode ? OrderCalc.checkCoupon(couponCode, subtotal, userId) : { ok: false };
     const couponDiscount = coupon.ok ? coupon.discount : 0;
 
     return {
       lines, valid, subtotal, originalTotal, productSaving: originalTotal - subtotal,
-      services, serviceFee, heavy, shippingFee, freeShipLeft: Math.max(0, S.freeShipThreshold - subtotal),
-      coupon, couponDiscount, gifts,
+      services, serviceFee, shippingFee, freeShipLeft: Math.max(0, S.freeShipThreshold - subtotal),
+      coupon, couponDiscount,
       total: Math.max(0, subtotal + serviceFee + shippingFee - couponDiscount)
     };
   }
@@ -162,7 +146,7 @@ const Orders = {
         price: l.price.price, originalPrice: l.price.original, qty: l.qty, priceSource: l.price.source,
         services: {
           engrave: l.canEngrave && l.item.services.engrave ? String(l.item.services.engrave).trim() || null : null,
-          giftWrap: !!l.item.services.giftWrap, install: l.canInstall && !!l.item.services.install
+          giftWrap: !!l.item.services.giftWrap
         }
       })),
       shipping, shippingMethod, paymentMethod,
@@ -171,7 +155,7 @@ const Orders = {
       subtotal: calc.subtotal, productSaving: calc.productSaving,
       couponCode: calc.coupon.ok ? calc.coupon.promo.code : null, couponDiscount: calc.couponDiscount,
       shippingFee: calc.shippingFee, serviceFee: calc.serviceFee, services: calc.services,
-      total: calc.total, gifts: calc.gifts.map(g => g.gift),
+      total: calc.total,
       note: (note || '').trim(), status: 'pending',
       history: [{ status: 'pending', at: now, by: u.id, byName: u.name, note: 'Đặt hàng' }],
       createdAt: now

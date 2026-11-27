@@ -62,7 +62,7 @@ const Layout = (() => {
     const parents = Catalog.parents();
     return `
     <div class="topbar d-none d-md-block"><div class="container d-flex justify-content-between align-items-center">
-      <div><i class="bi bi-telephone me-1"></i>Hotline <a href="tel:${s.hotline.replace(/\s/g, '')}">${s.hotline}</a><span class="mx-3 text-white-50">|</span>${s.workingHours}</div>
+      <div>${s.workingHours}</div>
       <div class="d-flex gap-4">
         <a href="${ROOT}khuyen-mai.html"><i class="bi bi-gift me-1"></i>Khuyến mãi</a>
         <a href="${ROOT}lien-he.html"><i class="bi bi-envelope me-1"></i>Liên hệ</a>
@@ -162,37 +162,24 @@ const Layout = (() => {
             <ul class="footer-links">
               <li><a href="${ROOT}chinh-sach.html#bao-hanh">Bảo hành</a></li>
               <li><a href="${ROOT}chinh-sach.html#doi-tra">Đổi trả</a></li>
-              <li><a href="${ROOT}chinh-sach.html#van-chuyen">Vận chuyển & lắp đặt</a></li>
+              <li><a href="${ROOT}chinh-sach.html#van-chuyen">Vận chuyển</a></li>
               <li><a href="${ROOT}chinh-sach.html#thanh-toan">Thanh toán</a></li>
               <li><a href="${ROOT}chinh-sach.html#bao-mat">Bảo mật</a></li>
               <li><a href="${ROOT}cau-hoi-thuong-gap.html">Câu hỏi thường gặp</a></li>
             </ul>
           </div>
           <div class="col-lg-4">
-            <div class="footer-title">Nhận tin khuyến mãi</div>
-            <p class="small text-muted-2">Đăng ký để nhận ưu đãi độc quyền và mã giảm giá cho đơn đầu tiên.</p>
-            <form class="newsletter js-newsletter" novalidate>
-              <input type="email" class="form-control" placeholder="Email của bạn" aria-label="Email" required>
-              <button class="btn btn-light" type="submit">Đăng ký</button>
-            </form>
-            <div class="footer-social mt-3">
-              <a href="${s.facebook}" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-              <a href="${s.instagram}" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-              <a href="${s.youtube}" target="_blank" rel="noopener" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-              <a href="${s.zalo}" target="_blank" rel="noopener" aria-label="Zalo" class="zalo-txt">Zalo</a>
-            </div>
-            <div class="mt-3 small">
-              <a href="${ROOT}gioi-thieu.html" class="me-3">Giới thiệu</a><a href="${ROOT}lien-he.html">Liên hệ</a>
-            </div>
+            <div class="footer-title">Về chúng tôi</div>
+            <ul class="footer-links">
+              <li><a href="${ROOT}gioi-thieu.html">Giới thiệu</a></li>
+              <li><a href="${ROOT}lien-he.html">Liên hệ</a></li>
+            </ul>
           </div>
         </div>
         <div class="footer-bottom">© ${new Date().getFullYear()} ${s.storeName}. Đồ án website bán đồng hồ.</div>
       </div>
     </footer>
     <div class="float-contact">
-      <a href="tel:${s.hotline.replace(/\s/g, '')}" class="fc-btn fc-phone" aria-label="Gọi hotline"><i class="bi bi-telephone-fill"></i></a>
-      <a href="${s.zalo}" target="_blank" rel="noopener" class="fc-btn fc-zalo" aria-label="Chat Zalo">Zalo</a>
-      <a href="${s.messenger}" target="_blank" rel="noopener" class="fc-btn fc-mess" aria-label="Messenger"><i class="bi bi-messenger"></i></a>
       <button class="fc-btn fc-top js-top" aria-label="Lên đầu trang"><i class="bi bi-arrow-up"></i></button>
     </div>`;
   }
@@ -233,13 +220,6 @@ const Layout = (() => {
     const top = $('.js-top');
     top?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     window.addEventListener('scroll', () => top?.classList.toggle('show', window.scrollY > 500), { passive: true });
-    $('.js-newsletter')?.addEventListener('submit', e => {
-      e.preventDefault();
-      const inp = $('input', e.target);
-      if (!Utils.isEmail(inp.value)) { Utils.toast('Email không hợp lệ.', 'error'); return; }
-      inp.value = '';
-      Utils.toast('Đăng ký thành công! Mã <strong>WELCOME50</strong> đã được gửi tới email của bạn.');
-    });
     ['th:cart', 'th:wishlist'].forEach(ev => document.addEventListener(ev, updateBadges));
     updateBadges();
   }

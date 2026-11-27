@@ -15,12 +15,11 @@
     const lines = items.map(([pid, qty]) => {
       const p = byId(pid);
       return { productId: pid, name: p.name, price: p.salePrice || p.price, originalPrice: p.price, qty,
-        services: { engrave: null, giftWrap: false, install: p.heavy } };
+        services: { engrave: null, giftWrap: false } };
     });
     const subtotal = lines.reduce((s, l) => s + l.price * l.qty, 0);
-    const heavy = lines.some(l => byId(l.productId).heavy);
-    const shippingFee = (subtotal >= 500000 ? 0 : 30000) + (heavy ? 150000 : 0);
-    const serviceFee = lines.filter(l => l.services.install).length * 200000;
+    const shippingFee = subtotal >= 500000 ? 0 : 30000;
+    const serviceFee = 0;
     const couponDiscount = extra.couponDiscount || 0;
     const staff = pick(STAFF);
     const history = [{ status: 'pending', at: created.toISOString(), by: user.id, byName: user.name, note: 'Đặt hàng' }];
@@ -46,7 +45,7 @@
         : status === 'completed' || (payment === 'bank' && status !== 'pending') ? 'paid' : 'unpaid',
       subtotal, couponCode: extra.couponCode || null, couponDiscount, shippingFee, serviceFee,
       total: subtotal - couponDiscount + shippingFee + serviceFee,
-      gifts: [], note: extra.note || '', status, history, createdAt: created.toISOString()
+      note: extra.note || '', status, history, createdAt: created.toISOString()
     };
   }
 

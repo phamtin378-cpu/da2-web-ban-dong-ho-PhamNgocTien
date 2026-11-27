@@ -29,7 +29,7 @@ const Cart = {
       return false;
     }
     if (line) line.qty += qty;
-    else items.push({ productId, qty, services: { engrave: '', giftWrap: false, install: !!p.heavy } });
+    else items.push({ productId, qty, services: { engrave: '', giftWrap: false } });
     Cart._save(items);
     if (!silent) Utils.toast(`Đã thêm <strong>${Utils.escape(p.name)}</strong> vào giỏ hàng. <a href="${ROOT}gio-hang.html" class="link-dark fw-semibold">Xem giỏ</a>`);
     return true;

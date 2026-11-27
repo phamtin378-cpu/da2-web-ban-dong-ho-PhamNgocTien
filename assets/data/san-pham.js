@@ -25,15 +25,15 @@
     'treo-tuong-hien-dai':{ kind: 'wall' },
     'treo-tuong-go':      { kind: 'wall' },
     'treo-tuong-kim-troi':{ kind: 'wall' },
-    'treo-tuong-tranh':   { kind: 'painting', heavy: true },
-    'treo-tuong-qua-lac': { kind: 'pendulum', heavy: true },
+    'treo-tuong-tranh':   { kind: 'painting' },
+    'treo-tuong-qua-lac': { kind: 'pendulum' },
     'de-ban-co-dien':     { kind: 'desk' },
     'bao-thuc':           { kind: 'alarm' },
     'dien-tu-led':        { kind: 'led' },
     'mo-hinh-nghe-thuat': { kind: 'art' },
     'dong-ho-cat':        { kind: 'hourglass' },
-    'cay-go':             { kind: 'floor', heavy: true },
-    'cay-co':             { kind: 'floor', heavy: true },
+    'cay-go':             { kind: 'floor' },
+    'cay-co':             { kind: 'floor' },
     'bo-tui-co':          { kind: 'pocket' },
     'bo-tui-quartz':      { kind: 'pocket' },
     'day-dong-ho':        { kind: 'strap' },
@@ -84,8 +84,6 @@
       stock: opt.stock !== undefined ? opt.stock : 3 + Math.floor(rnd() * 40),
       sold: opt.sold !== undefined ? opt.sold : Math.floor(rnd() * 260),
       warranty: opt.warranty || WARRANTY[parent],
-      heavy: !!(opt.heavy || (SUB[cat] && SUB[cat].heavy)),
-      featured: !!opt.featured,
       images: opt.images || [],          // để trống → dùng ảnh minh họa SVG tự sinh
       look: { kind: opt.kind || SUB[cat].kind },
       specs,
@@ -98,16 +96,16 @@
   // ===== ĐỒNG HỒ NAM =====
   a('deo-tay-nam', 'casio', 'Casio MTP-1374L-1AVDF', 1850000, 1665000, 'Quartz|Da|Mineral|43.5 mm|5 ATM|Nhật Bản|Đen|Tròn', { sold: 312 });
   a('deo-tay-nam', 'casio', 'Casio MTP-VD01D-2BVUDF', 1450000, null, 'Quartz|Thép không gỉ|Mineral|45 mm|5 ATM|Nhật Bản|Xanh navy|Tròn');
-  a('deo-tay-nam', 'casio', 'Casio G-Shock GA-2100-1A1DR', 3815000, 3434000, 'Quartz|Nhựa / cao su|Mineral|45.4 mm|20 ATM|Nhật Bản|Đen|Bát giác', { sold: 405, featured: true });
+  a('deo-tay-nam', 'casio', 'Casio G-Shock GA-2100-1A1DR', 3815000, 3434000, 'Quartz|Nhựa / cao su|Mineral|45.4 mm|20 ATM|Nhật Bản|Đen|Bát giác', { sold: 405 });
   a('deo-tay-nam', 'casio', 'Casio Edifice EFR-526L-1AVUDF', 3568000, null, 'Quartz|Da|Mineral|43.8 mm|10 ATM|Nhật Bản|Đen|Tròn');
-  a('deo-tay-nam', 'seiko', 'Seiko 5 Sports SRPD55K1', 7650000, 6885000, 'Automatic|Thép không gỉ|Hardlex|42.5 mm|10 ATM|Nhật Bản|Đen|Tròn', { sold: 228, featured: true });
+  a('deo-tay-nam', 'seiko', 'Seiko 5 Sports SRPD55K1', 7650000, 6885000, 'Automatic|Thép không gỉ|Hardlex|42.5 mm|10 ATM|Nhật Bản|Đen|Tròn', { sold: 228 });
   a('deo-tay-nam', 'seiko', 'Seiko Presage Cocktail Time SRPB43J1', 12400000, null, 'Automatic|Da|Hardlex|40.5 mm|5 ATM|Nhật Bản|Xanh dương|Tròn', { days: 8 });
   a('deo-tay-nam', 'seiko', 'Seiko Prospex Solar SNE499P1', 11200000, null, 'Solar|Silicone|Hardlex|43.5 mm|20 ATM|Nhật Bản|Đen|Tròn');
   a('deo-tay-nam', 'citizen', 'Citizen Eco-Drive BM7108-81L', 5890000, 5301000, 'Eco-Drive|Thép không gỉ|Sapphire|40 mm|10 ATM|Nhật Bản|Xanh navy|Tròn', { sold: 190 });
   a('deo-tay-nam', 'citizen', 'Citizen Automatic NJ0100-89L', 8550000, null, 'Automatic|Thép không gỉ|Sapphire|40 mm|5 ATM|Nhật Bản|Xanh navy|Tròn', { days: 12 });
-  a('deo-tay-nam', 'orient', 'Orient Bambino RA-AC0M03B10B', 5620000, 4990000, 'Automatic|Da|Mineral|40.5 mm|3 ATM|Nhật Bản|Đen|Tròn', { sold: 275, featured: true });
+  a('deo-tay-nam', 'orient', 'Orient Bambino RA-AC0M03B10B', 5620000, 4990000, 'Automatic|Da|Mineral|40.5 mm|3 ATM|Nhật Bản|Đen|Tròn', { sold: 275 });
   a('deo-tay-nam', 'orient', 'Orient Star RE-AV0005L00B', 16800000, null, 'Automatic|Da|Sapphire|41 mm|5 ATM|Nhật Bản|Xanh navy|Tròn');
-  a('deo-tay-nam', 'tissot', 'Tissot PRX T137.410.11.041.00', 12900000, null, 'Quartz|Thép không gỉ|Sapphire|40 mm|10 ATM|Thụy Sĩ|Xanh dương|Tròn', { sold: 166, featured: true });
+  a('deo-tay-nam', 'tissot', 'Tissot PRX T137.410.11.041.00', 12900000, null, 'Quartz|Thép không gỉ|Sapphire|40 mm|10 ATM|Thụy Sĩ|Xanh dương|Tròn', { sold: 166 });
   a('deo-tay-nam', 'tissot', 'Tissot Le Locle Powermatic 80 T006.407.16.033.00', 19650000, null, 'Automatic|Da|Sapphire|39.3 mm|3 ATM|Thụy Sĩ|Trắng|Tròn');
   a('deo-tay-nam', 'longines', 'Longines Master Collection L2.793.4.78.3', 72500000, null, 'Automatic|Da|Sapphire|40 mm|3 ATM|Thụy Sĩ|Bạc|Tròn', { stock: 2, sold: 14 });
   a('deo-tay-nam', 'longines', 'Longines HydroConquest L3.781.4.56.6', 46800000, null, 'Automatic|Thép không gỉ|Sapphire|41 mm|30 ATM|Thụy Sĩ|Xanh dương|Tròn', { stock: 3, sold: 22, days: 5 });
@@ -117,13 +115,13 @@
   a('deo-tay-nu', 'casio', 'Casio LTP-V005L-7B2UDF', 950000, null, 'Quartz|Da|Mineral|25 mm|3 ATM|Nhật Bản|Trắng|Tròn', { sold: 240 });
   a('deo-tay-nu', 'casio', 'Casio Sheen SHE-4540CGM-4AUDF', 4200000, 3780000, 'Quartz|Thép không gỉ|Sapphire|28 mm|5 ATM|Nhật Bản|Vàng hồng|Tròn');
   a('deo-tay-nu', 'seiko', 'Seiko Solar SUP250P1', 4950000, null, 'Solar|Thép không gỉ|Hardlex|29 mm|3 ATM|Nhật Bản|Trắng|Tròn');
-  a('deo-tay-nu', 'citizen', 'Citizen Eco-Drive EM0500-73A', 7350000, 6615000, 'Eco-Drive|Thép không gỉ|Sapphire|30 mm|5 ATM|Nhật Bản|Bạc|Tròn', { featured: true });
+  a('deo-tay-nu', 'citizen', 'Citizen Eco-Drive EM0500-73A', 7350000, 6615000, 'Eco-Drive|Thép không gỉ|Sapphire|30 mm|5 ATM|Nhật Bản|Bạc|Tròn');
   a('deo-tay-nu', 'citizen', 'Citizen Eco-Drive EM0790-55N', 8900000, null, 'Eco-Drive|Thép không gỉ|Sapphire|30.5 mm|5 ATM|Nhật Bản|Xanh navy|Tròn', { days: 3 });
   a('deo-tay-nu', 'orient', 'Orient Automatic RA-NB0102S10B', 5900000, null, 'Automatic|Da|Mineral|30.5 mm|5 ATM|Nhật Bản|Trắng|Tròn');
-  a('deo-tay-nu', 'tissot', 'Tissot Lovely Square T058.109.33.031.00', 9850000, 8865000, 'Quartz|Thép không gỉ|Sapphire|20 mm|3 ATM|Thụy Sĩ|Bạc|Vuông', { featured: true });
+  a('deo-tay-nu', 'tissot', 'Tissot Lovely Square T058.109.33.031.00', 9850000, 8865000, 'Quartz|Thép không gỉ|Sapphire|20 mm|3 ATM|Thụy Sĩ|Bạc|Vuông');
   a('deo-tay-nu', 'tissot', 'Tissot Everytime Lady T143.210.11.011.00', 7890000, null, 'Quartz|Thép không gỉ|Sapphire|34 mm|3 ATM|Thụy Sĩ|Trắng|Tròn', { days: 15 });
   a('deo-tay-nu', 'longines', 'Longines DolceVita L5.512.4.71.6', 52900000, null, 'Quartz|Da|Sapphire|23.3 x 37 mm|3 ATM|Thụy Sĩ|Trắng|Chữ nhật', { stock: 2, sold: 9 });
-  a('deo-tay-nu', 'dw', 'Daniel Wellington Petite Melrose 32mm', 4190000, 3350000, 'Quartz|Thép lưới|Mineral|32 mm|3 ATM|Thụy Điển|Vàng hồng|Tròn', { sold: 330, featured: true });
+  a('deo-tay-nu', 'dw', 'Daniel Wellington Petite Melrose 32mm', 4190000, 3350000, 'Quartz|Thép lưới|Mineral|32 mm|3 ATM|Thụy Điển|Vàng hồng|Tròn', { sold: 330 });
   a('deo-tay-nu', 'dw', 'Daniel Wellington Classic Sheffield 28mm', 3690000, null, 'Quartz|Da|Mineral|28 mm|3 ATM|Thụy Điển|Trắng|Tròn');
   a('deo-tay-nu', 'fossil', 'Fossil Jacqueline ES3546', 3450000, 2760000, 'Quartz|Da|Mineral|36 mm|3 ATM|Mỹ|Nâu|Tròn');
 
@@ -140,7 +138,7 @@
   a('deo-tay-tre-em', 'casio', 'Casio W-218H-4BVDF', 690000, null, 'Quartz|Nhựa|Nhựa|43 mm|5 ATM|Nhật Bản|Đỏ|Vuông');
 
   // ===== THÔNG MINH =====
-  a('smartwatch', 'apple', 'Apple Watch Series 10 GPS 42mm', 10990000, 10290000, 'iOS|1.65 inch LTPO OLED|18 giờ|GPS,Đo nhịp tim,SpO2,ECG,Thông báo|Silicone|Mỹ|Đen|Chữ nhật', { sold: 210, featured: true });
+  a('smartwatch', 'apple', 'Apple Watch Series 10 GPS 42mm', 10990000, 10290000, 'iOS|1.65 inch LTPO OLED|18 giờ|GPS,Đo nhịp tim,SpO2,ECG,Thông báo|Silicone|Mỹ|Đen|Chữ nhật', { sold: 210 });
   a('smartwatch', 'apple', 'Apple Watch SE 2 GPS 40mm', 6290000, null, 'iOS|1.57 inch OLED|18 giờ|GPS,Đo nhịp tim,Thông báo|Silicone|Mỹ|Trắng|Chữ nhật');
   a('smartwatch', 'apple', 'Apple Watch Ultra 2 49mm', 21990000, null, 'iOS|1.92 inch LTPO OLED|36 giờ|GPS,Đo nhịp tim,SpO2,ECG,Nghe gọi,Lặn biển|Vải|Mỹ|Bạc|Chữ nhật', { days: 10 });
   a('smartwatch', 'samsung', 'Samsung Galaxy Watch7 44mm', 7490000, 5990000, 'Android|1.5 inch Super AMOLED|40 giờ|GPS,Đo nhịp tim,SpO2,ECG,Thông báo|Silicone|Hàn Quốc|Xanh lá|Tròn', { sold: 180 });
@@ -152,8 +150,8 @@
   // ===== TREO TƯỜNG =====
   a('treo-tuong-co-dien', 'rhythm', 'Đồng hồ treo tường Rhythm CMG494NR06', 2850000, null, '38 cm|Gỗ|Kim trôi|Pin AA|Cổ điển|Phòng khách,Phòng làm việc|Nhật Bản|Nâu|Tròn');
   a('treo-tuong-co-dien', 'vinh-hung', 'Đồng hồ treo tường La Mã viền đồng', 980000, 790000, '40 cm|Kim loại|Kim giật|Pin AA|Cổ điển|Phòng khách|Việt Nam|Vàng đồng|Tròn', { sold: 288 });
-  a('treo-tuong-co-dien', 'howard-miller', 'Howard Miller Gallery Dalton 625-279', 6500000, null, '62 cm|Kim loại|Kim trôi|Pin AA|Cổ điển|Phòng khách|Mỹ|Đen|Tròn', { heavy: true });
-  a('treo-tuong-hien-dai', 'karlsson', 'Karlsson Station KA5507', 2290000, 1830000, '50 cm|Kim loại|Kim trôi|Pin AA|Hiện đại|Phòng khách,Văn phòng|Hà Lan|Đen|Tròn', { featured: true });
+  a('treo-tuong-co-dien', 'howard-miller', 'Howard Miller Gallery Dalton 625-279', 6500000, null, '62 cm|Kim loại|Kim trôi|Pin AA|Cổ điển|Phòng khách|Mỹ|Đen|Tròn');
+  a('treo-tuong-hien-dai', 'karlsson', 'Karlsson Station KA5507', 2290000, 1830000, '50 cm|Kim loại|Kim trôi|Pin AA|Hiện đại|Phòng khách,Văn phòng|Hà Lan|Đen|Tròn');
   a('treo-tuong-hien-dai', 'karlsson', 'Karlsson Numbers Cutout', 1690000, null, '40 cm|Nhựa|Kim trôi|Pin AA|Bắc Âu|Phòng khách,Phòng ngủ|Hà Lan|Trắng|Tròn', { days: 4 });
   a('treo-tuong-hien-dai', 'timehouse', 'TIMEHOUSE Minimal Line 30cm', 450000, null, '30 cm|Nhựa|Kim trôi|Pin AA|Tối giản|Phòng ngủ,Văn phòng|Việt Nam|Trắng|Tròn', { sold: 410 });
   a('treo-tuong-go', 'rhythm', 'Rhythm gỗ óc chó CMG545', 3650000, null, '35 cm|Gỗ|Kim trôi|Pin AA|Bắc Âu|Phòng khách|Nhật Bản|Gỗ tự nhiên|Tròn');
@@ -166,7 +164,7 @@
   a('treo-tuong-tranh', 'timehouse', 'Tranh đồng hồ Phố cổ Hà Nội', 1450000, null, '90 x 60 cm|Canvas|Kim trôi|Pin AA|Á Đông|Phòng khách|Việt Nam|Nâu|Chữ nhật');
   a('treo-tuong-tranh', 'vinh-hung', 'Tranh đồng hồ Mã đáo thành công', 2350000, null, '100 x 50 cm|Gỗ|Kim trôi|Pin AA|Á Đông|Phòng khách,Văn phòng|Việt Nam|Vàng đồng|Chữ nhật', { days: 9 });
   a('treo-tuong-qua-lac', 'hermle', 'Hermle quả lắc treo tường 70509', 28500000, null, '68 cm|Gỗ|Quả lắc|Lên dây cót|Cổ điển|Phòng khách|Đức|Nâu|Chữ nhật', { stock: 2 });
-  a('treo-tuong-qua-lac', 'rhythm', 'Rhythm quả lắc Melody CMJ502', 8900000, 7990000, '72 cm|Gỗ|Quả lắc|Pin AA|Cổ điển|Phòng khách|Nhật Bản|Nâu|Chữ nhật', { featured: true });
+  a('treo-tuong-qua-lac', 'rhythm', 'Rhythm quả lắc Melody CMJ502', 8900000, 7990000, '72 cm|Gỗ|Quả lắc|Pin AA|Cổ điển|Phòng khách|Nhật Bản|Nâu|Chữ nhật');
   a('treo-tuong-qua-lac', 'howard-miller', 'Howard Miller quả lắc 625-361', 12600000, null, '60 cm|Gỗ|Quả lắc|Pin AA|Cổ điển|Phòng khách|Mỹ|Gỗ tự nhiên|Chữ nhật');
 
   // ===== ĐỂ BÀN / TRANG TRÍ =====
@@ -185,7 +183,7 @@
 
   // ===== ĐỒNG HỒ CÂY =====
   a('cay-go', 'hermle', 'Đồng hồ cây Hermle Shrewsbury 01150', 125000000, null, '198 cm|Gỗ óc chó|Cơ lên dây|Westminster|Đức|Nâu|Chữ nhật', { stock: 1, sold: 3 });
-  a('cay-co', 'howard-miller', 'Đồng hồ cây Howard Miller 611-019', 89000000, 79900000, '205 cm|Gỗ anh đào|Cơ lên dây|Westminster, Whittington, St. Michael|Mỹ|Nâu|Chữ nhật', { stock: 2, sold: 5, featured: true });
+  a('cay-co', 'howard-miller', 'Đồng hồ cây Howard Miller 611-019', 89000000, 79900000, '205 cm|Gỗ anh đào|Cơ lên dây|Westminster, Whittington, St. Michael|Mỹ|Nâu|Chữ nhật', { stock: 2, sold: 5 });
   a('cay-go', 'rhythm', 'Đồng hồ cây Rhythm CRJ609', 32500000, null, '185 cm|Gỗ sồi|Điện tử (pin)|Westminster, Big Ben|Nhật Bản|Gỗ tự nhiên|Chữ nhật', { stock: 3, sold: 11 });
   a('cay-co', 'vinh-hung', 'Đồng hồ cây gỗ gụ chạm khắc', 45000000, null, '210 cm|Gỗ gụ|Cơ lên dây|Westminster|Việt Nam|Nâu|Chữ nhật', { stock: 2, sold: 6 });
 

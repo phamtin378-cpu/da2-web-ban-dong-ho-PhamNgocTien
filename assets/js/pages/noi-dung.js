@@ -14,28 +14,17 @@
       const upcoming = all.filter(p => Promo.status(p) === 'upcoming');
       const u = Auth.user();
       const saved = new Set((u && u.savedCoupons) || []);
-      // Ảnh đại diện chương trình: ưu tiên sản phẩm nổi bật, tránh phụ kiện
-      const sample = pr => {
-        const list = Catalog.query({ promo: pr.id, sort: 'bestseller' });
-        const notAcc = p => Catalog.parentOf(p.categoryId).id !== 'phu-kien';
-        return list.find(p => p.featured && notAcc(p)) || list.find(notAcc) || list[0];
-      };
-
-      const dealCard = pr => {
-        const p = pr.type !== 'coupon' && sample(pr);
-        const detail = pr.type === 'discount'
-          ? `Giảm ${pr.discountType === 'percent' ? pr.value + '%' : fp(pr.value)}${pr.maxDiscount ? ` (tối đa ${fp(pr.maxDiscount)})` : ''}`
-          : pr.type === 'gift' ? `Quà: ${Utils.escape(pr.gift)}` : `${pr.items.length} sản phẩm giá sốc`;
-        const st = Promo.status(pr);
+      // Thẻ flash sale sắp diễn ra: ảnh lấy từ sản phẩm bán chạy nhất trong chương trình
+      const upcomingCard = pr => {
+        const p = Catalog.query({ promo: pr.id, sort: 'bestseller' })[0];
         return `<div class="col-md-6 col-lg-4"><article class="deal-card">
-          <a href="san-pham.html?promo=${pr.id}" class="deal-media">${p ? `<img src="${Img.product(p, 1)}" alt="">` : ''}
-            <span class="badge-tag ${pr.type === 'flashsale' ? 'tag-flash' : pr.type === 'gift' ? 'tag-new' : 'tag-sale'}">${Promo.TYPE_LABEL[pr.type]}</span></a>
+          <div class="deal-media">${p ? `<img src="${Img.product(p, 1)}" alt="">` : ''}
+            <span class="badge-tag tag-flash">${Promo.TYPE_LABEL[pr.type]}</span></div>
           <div class="p-3">
             <h3 class="h6 fw-bold mb-1">${Utils.escape(pr.name)}</h3>
-            <div class="small">${detail}</div>
+            <div class="small">${pr.items.length} sản phẩm giá sốc</div>
             <div class="small text-muted-2 mt-1">${Utils.escape(pr.description || '')}</div>
-            <div class="small mt-2 ${st === 'running' ? '' : 'text-muted-2'}"><i class="bi bi-clock me-1"></i>${st === 'running' ? 'Kết thúc ' + Utils.formatDate(pr.end, true) : 'Bắt đầu ' + Utils.formatDate(pr.start, true)}</div>
-            ${st === 'running' ? `<a href="san-pham.html?promo=${pr.id}" class="btn btn-dark btn-sm mt-3">Xem sản phẩm</a>` : ''}
+            <div class="small mt-2 text-muted-2"><i class="bi bi-clock me-1"></i>Bắt đầu ${Utils.formatDate(pr.start, true)}</div>
           </div></article></div>`;
       };
       const couponCard = c => {
@@ -55,7 +44,6 @@
       };
 
       const flash = running.filter(p => p.type === 'flashsale');
-      const deals = running.filter(p => ['discount', 'gift'].includes(p.type));
       const coupons = all.filter(p => p.type === 'coupon' && ['running', 'upcoming'].includes(Promo.status(p)));
       root.innerHTML = `
         ${flash.map(fs => `
@@ -66,13 +54,12 @@
             <div class="d-flex align-items-center gap-2 small">Kết thúc sau <div class="countdown" data-end="${fs.end}"></div></div>
             <a href="san-pham.html?promo=${fs.id}" class="btn btn-dark">Săn deal ngay</a>
           </div></div>`).join('')}
-        <h2 class="section-title mb-3">Chương trình đang diễn ra</h2>
-        <div class="row g-4 mb-5">${deals.map(dealCard).join('') || '<div class="col-12 text-muted-2">Hiện chưa có chương trình nào.</div>'}</div>
+        ${flash.length ? '' : '<div class="text-muted-2 mb-5">Hiện chưa có chương trình flash sale nào đang diễn ra.</div>'}
         <div class="d-flex justify-content-between align-items-end mb-3"><h2 class="section-title">Mã giảm giá</h2>
           ${u ? '<a href="tai-khoan.html#coupons" class="link-more">Ví mã của tôi</a>' : ''}</div>
         <div class="row g-3 mb-5">${coupons.map(couponCard).join('')}</div>
-        ${upcoming.filter(p => p.type !== 'coupon').length ? `<h2 class="section-title mb-3">Sắp diễn ra</h2>
-        <div class="row g-4">${upcoming.filter(p => p.type !== 'coupon').map(dealCard).join('')}</div>` : ''}`;
+        ${upcoming.filter(p => p.type === 'flashsale').length ? `<h2 class="section-title mb-3">Flash sale sắp diễn ra</h2>
+        <div class="row g-4">${upcoming.filter(p => p.type === 'flashsale').map(upcomingCard).join('')}</div>` : ''}`;
 
       $$('.countdown[data-end]', root).forEach(el => Utils.countdown(el, el.dataset.end, () => location.reload()));
       root.addEventListener('click', e => {
@@ -127,11 +114,6 @@
             <img src="${postCover(post)}" alt="" class="post-cover">
             <p class="lead mt-4">${Utils.escape(post.excerpt)}</p>
             <div class="post-content">${post.content}</div>
-            <div class="d-flex gap-2 align-items-center mt-4 pt-3 border-top">
-              <span class="small text-muted-2">Chia sẻ:</span>
-              <a class="btn btn-outline-dark btn-sm" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}"><i class="bi bi-facebook"></i></a>
-              <button class="btn btn-outline-dark btn-sm" id="copyLink"><i class="bi bi-link-45deg"></i> Sao chép liên kết</button>
-            </div>
           </article>
           <aside class="col-lg-4">
             ${related.length ? `<div class="summary-title">Sản phẩm liên quan</div>
@@ -145,17 +127,13 @@
               <div class="min-w-0"><div class="small fw-medium">${Utils.escape(p.title)}</div><div class="small text-muted-2">${Utils.formatDate(p.createdAt)}</div></div></a>`).join('')}</div>
           </aside>
         </div>`;
-      $('#copyLink').addEventListener('click', async () => {
-        try { await navigator.clipboard.writeText(location.href); } catch { /* bỏ qua */ }
-        Utils.toast('Đã sao chép liên kết bài viết.');
-      });
     },
 
     /* ================= GIỚI THIỆU ================= */
     about() {
       const products = Catalog.products();
-      const featured = products.filter(p => p.featured);
-      const pick = cat => featured.find(p => Catalog.parentOf(p.categoryId).id === cat) || products.find(p => Catalog.parentOf(p.categoryId).id === cat);
+      // Ảnh minh họa: sản phẩm bán chạy nhất của từng danh mục
+      const pick = cat => Catalog.query({ cat, sort: 'bestseller' })[0];
       $('#aboutCollage').innerHTML = ['deo-tay', 'treo-tuong', 'dong-ho-cay', 'de-ban'].map(c => pick(c)).filter(Boolean)
         .map(p => `<img src="${Img.product(p)}" alt="${Utils.escape(p.name)}">`).join('');
       $('#aboutStats').innerHTML = [[`${S.stores.length}`, 'Showroom'], [`${Catalog.brands().length}+`, 'Thương hiệu'], [`${products.length}+`, 'Mẫu sản phẩm'], ['50.000+', 'Khách hàng'], ['5 năm', 'Bảo hành tối đa']].map(([v, l]) =>
@@ -172,10 +150,6 @@
           <li><i class="bi bi-envelope"></i><div><div class="small text-muted-2">Email</div><a href="mailto:${S.email}">${S.email}</a></div></li>
           <li><i class="bi bi-clock"></i><div><div class="small text-muted-2">Giờ làm việc</div>${S.workingHours}</div></li>
         </ul>
-        <div class="d-flex gap-2 mt-3">
-          <a href="${S.zalo}" target="_blank" rel="noopener" class="btn btn-outline-dark btn-sm">Chat Zalo</a>
-          <a href="${S.messenger}" target="_blank" rel="noopener" class="btn btn-outline-dark btn-sm">Messenger</a>
-        </div>
         <div class="summary-title mt-4">Showroom</div>
         <ul class="list-unstyled contact-list mb-0">${S.stores.map(s => `
           <li><i class="bi bi-shop"></i><div><div class="fw-semibold small">${Utils.escape(s.name)}</div>
@@ -230,12 +204,10 @@
           <li>Đổi sang sản phẩm khác (không lỗi) trong 3 ngày: thu phí 10% giá trị đơn hàng.</li>
           <li>Không áp dụng đổi trả với sản phẩm đã khắc tên, sản phẩm flash sale (trừ lỗi nhà sản xuất).</li>
           <li>Hoàn tiền trong 3–7 ngày làm việc qua tài khoản ngân hàng hoặc thẻ đã thanh toán.</li></ul>`],
-        ['van-chuyen', 'Vận chuyển & lắp đặt', `
+        ['van-chuyen', 'Vận chuyển', `
           <ul><li>Giao tiêu chuẩn 3–5 ngày làm việc: <strong>miễn phí</strong> cho đơn từ ${fp(S.freeShipThreshold)}, dưới mức này phí ${fp(S.shipFee)}.</li>
           <li>Giao hỏa tốc 1–2 ngày (nội thành Hà Nội, TP. HCM, Đà Nẵng): phụ phí ${fp(S.expressFee)}.</li>
-          <li>Hàng cồng kềnh (đồng hồ cây, quả lắc, tranh đồng hồ khổ lớn): phụ phí vận chuyển ${fp(S.heavyShipFee)}, giao bằng xe tải nhỏ.</li>
-          <li>Lắp đặt & cân chỉnh tại nhà bởi kỹ thuật viên: ${fp(S.installFee)}/sản phẩm.</li>
-          <li>Dịch vụ khắc tên: ${fp(S.engraveFee)}/sản phẩm; gói quà kèm thiệp: ${fp(S.giftWrapFee)}/sản phẩm (có thể miễn phí theo chương trình khuyến mãi).</li>
+          <li>Dịch vụ khắc tên: ${fp(S.engraveFee)}/sản phẩm; gói quà kèm thiệp: ${fp(S.giftWrapFee)}/sản phẩm.</li>
           <li>Khách được kiểm tra hàng trước khi thanh toán (với đơn COD).</li></ul>`],
         ['thanh-toan', 'Chính sách thanh toán', `
           <ul><li><strong>COD:</strong> thanh toán tiền mặt khi nhận hàng.</li>
@@ -270,15 +242,13 @@
         ['Thanh toán & khuyến mãi', [
           ['Có những hình thức thanh toán nào?', 'COD (tiền mặt khi nhận hàng) và chuyển khoản/QR ngân hàng.'],
           ['Tôi có thể dùng nhiều mã giảm giá cho một đơn không?', 'Mỗi đơn chỉ áp dụng 1 mã giảm giá. Mã được trừ thêm trên giá đã giảm của sản phẩm.'],
-          ['Một sản phẩm thuộc nhiều chương trình thì tính giá thế nào?', 'Hệ thống tự áp dụng mức giá thấp nhất trong các chương trình (giảm giá, flash sale) – bạn luôn nhận được ưu đãi tốt nhất.'],
           ['Flash sale có giới hạn số lượng không?', 'Có. Mỗi sản phẩm flash sale có số suất giới hạn; khi hết suất hoặc mua vượt số suất còn lại, sản phẩm được tính giá thường.']]],
-        ['Vận chuyển & lắp đặt', [
+        ['Vận chuyển', [
           ['Phí vận chuyển là bao nhiêu?', `Miễn phí giao tiêu chuẩn cho đơn từ ${fp(S.freeShipThreshold)}, dưới mức này phí ${fp(S.shipFee)}. Giao hỏa tốc thêm ${fp(S.expressFee)}.`],
-          ['Đồng hồ cây, đồng hồ treo tường lớn được giao thế nào?', `Hàng cồng kềnh được giao bằng xe tải nhỏ (phụ phí ${fp(S.heavyShipFee)}). Bạn có thể chọn dịch vụ lắp đặt & cân chỉnh tại nhà (${fp(S.installFee)}/sản phẩm) trong giỏ hàng.`],
           ['Tôi có được kiểm tra hàng trước khi nhận không?', 'Có, với đơn COD bạn được mở hộp kiểm tra trước khi thanh toán.']]],
         ['Bảo hành & dịch vụ', [
           ['Thời gian bảo hành bao lâu?', 'Đồng hồ đeo tay và đồng hồ cây bảo hành 5 năm, treo tường 2 năm, thông minh và để bàn 1 năm, phụ kiện 6 tháng.'],
-          ['Khắc tên lên đồng hồ như thế nào?', `Chọn "Khắc tên" và nhập nội dung (tối đa 20 ký tự) cho từng sản phẩm đeo tay/bỏ túi trong giỏ hàng. Phí ${fp(S.engraveFee)}/sản phẩm, miễn phí khi có chương trình khuyến mãi. Sản phẩm đã khắc không áp dụng đổi trả (trừ lỗi nhà sản xuất).`],
+          ['Khắc tên lên đồng hồ như thế nào?', `Chọn "Khắc tên" và nhập nội dung (tối đa 20 ký tự) cho từng sản phẩm đeo tay/bỏ túi trong giỏ hàng. Phí ${fp(S.engraveFee)}/sản phẩm. Sản phẩm đã khắc không áp dụng đổi trả (trừ lỗi nhà sản xuất).`],
           ['Đồng hồ cơ chạy nhanh/chậm có phải lỗi không?', 'Đồng hồ cơ có sai số tự nhiên khoảng ±10–30 giây/ngày tùy bộ máy. Nếu sai số lớn hơn, hãy mang đến showroom để kiểm tra miễn phí.']]],
         ['Tài khoản & đánh giá', [
           ['Khi nào đánh giá của tôi được hiển thị?', 'Đánh giá được kiểm duyệt trước khi hiển thị, thường trong vòng 24 giờ. Bạn có thể sửa đánh giá trong 30 ngày.'],

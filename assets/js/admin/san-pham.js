@@ -56,8 +56,6 @@
                 <div class="col-md-4"><label class="form-label" for="pWarranty">Bảo hành (tháng)</label><input type="number" class="form-control" id="pWarranty" min="0" step="1"></div>
                 <div class="col-md-8 d-flex flex-wrap gap-4 align-items-end pb-2">
                   <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="pActive"><label class="form-check-label" for="pActive">Đang bán</label></div>
-                  <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="pFeatured"><label class="form-check-label" for="pFeatured">Nổi bật</label></div>
-                  <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="pHeavy"><label class="form-check-label" for="pHeavy">Hàng cồng kềnh</label></div>
                 </div>
                 <div class="col-12"><label class="form-label" for="pDesc">Mô tả</label><textarea class="form-control" id="pDesc" rows="4" maxlength="2000"></textarea></div>
               </div>
@@ -104,7 +102,7 @@
       return `<tr class="${x.status === 'hidden' ? 'row-muted' : ''}">
         <td><div class="d-flex align-items-center gap-2"><img src="${Img.product(x)}" alt="" width="48" height="48" class="rounded-2 flex-none">
           <div class="min-w-0"><div class="fw-medium text-truncate" style="max-width:320px">${Utils.escape(x.name)}</div>
-          <div class="small text-muted">${x.sku} · ${Utils.escape(Catalog.brand(x.brandId)?.name || '')}${x.featured ? ' · <i class="bi bi-star-fill text-warning" title="Nổi bật"></i>' : ''}${x.heavy ? ' · <i class="bi bi-truck" title="Hàng cồng kềnh"></i>' : ''}</div></div></div></td>
+          <div class="small text-muted">${x.sku} · ${Utils.escape(Catalog.brand(x.brandId)?.name || '')}</div></div></div></td>
         <td class="small">${Catalog.parentOf(x.categoryId).short}<br><span class="text-muted">${Catalog.category(x.categoryId).name}</span></td>
         <td class="text-end"><div class="fw-semibold">${fp(pr.price)}</div>${pr.percent ? `<div class="small text-muted"><s>${fp(x.price)}</s> -${pr.percent}%</div>` : ''}</td>
         <td class="text-center"><input type="number" class="form-control form-control-sm text-center js-stock ${x.stock <= 0 ? 'is-out' : x.stock <= LOW ? 'is-low' : ''}" data-id="${x.id}" value="${x.stock}" min="0" aria-label="Tồn kho ${Utils.escape(x.name)}"></td>
@@ -151,8 +149,6 @@
     $('#pStock').value = p ? p.stock : 0;
     $('#pWarranty').value = p ? p.warranty : 12;
     $('#pActive').checked = p ? p.status === 'active' : true;
-    $('#pFeatured').checked = p ? !!p.featured : false;
-    $('#pHeavy').checked = p ? !!p.heavy : false;
     $('#pDesc').value = p ? p.description : '';
     Utils.clearInvalid($('#pForm'));
     renderSpecs(p ? p.categoryId : '', p ? p.specs : {});
@@ -164,8 +160,6 @@
     const current = {};
     $$('.js-spec').forEach(i => { if (i.value.trim()) current[i.dataset.key] = i.value.trim(); });
     renderSpecs(e.target.value, current);
-    const parent = e.target.value && Catalog.parentOf(e.target.value).id;
-    if (parent === 'dong-ho-cay' || e.target.value === 'treo-tuong-qua-lac' || e.target.value === 'treo-tuong-tranh') $('#pHeavy').checked = true;
   });
   $('#pFile').addEventListener('change', async e => {
     const files = Array.from(e.target.files).slice(0, 5 - form.images.length);
@@ -200,7 +194,7 @@
     const data = {
       name, sku, categoryId: $('#pCat').value, brandId: $('#pBrand').value, price, salePrice: sale, stock,
       warranty: +$('#pWarranty').value || 0, status: $('#pActive').checked ? 'active' : 'hidden',
-      featured: $('#pFeatured').checked, heavy: $('#pHeavy').checked, description: $('#pDesc').value.trim(),
+      description: $('#pDesc').value.trim(),
       images: form.images, specs
     };
     try {

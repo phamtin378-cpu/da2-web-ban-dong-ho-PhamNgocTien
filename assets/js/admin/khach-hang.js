@@ -14,7 +14,6 @@
           <input type="search" class="form-control ps-5" id="fQ" placeholder="Tên, email, số điện thoại…" aria-label="Tìm khách hàng"></div>
         <select class="form-select" id="fStatus" style="max-width:170px" aria-label="Trạng thái"><option value="">Mọi trạng thái</option><option value="active">Đang hoạt động</option><option value="locked">Đã khóa</option></select>
         <select class="form-select" id="fSort" style="max-width:190px" aria-label="Sắp xếp"><option value="spent">Chi tiêu cao nhất</option><option value="orders">Nhiều đơn nhất</option><option value="newest">Mới đăng ký</option></select>
-        <button class="btn btn-outline-dark" id="exportBtn"><i class="bi bi-download me-1"></i>Xuất CSV</button>
       </div>
       <div class="table-responsive"><table class="table admin-table align-middle">
         <thead><tr><th>Khách hàng</th><th>Liên hệ</th><th class="text-center">Đơn hàng</th><th class="text-end">Đã chi tiêu</th><th>Ngày đăng ký</th><th>Trạng thái</th><th></th></tr></thead><tbody id="tbody"></tbody></table></div>
@@ -90,7 +89,5 @@
       render();
     }
   });
-  $('#exportBtn').addEventListener('click', () => Admin.exportCsv('khach-hang.csv', ['Họ tên', 'Email', 'SĐT', 'Số đơn', 'Đã chi tiêu', 'Ngày đăng ký', 'Trạng thái'],
-    list().map(({ u, count, spent }) => [u.name, u.email, u.phone, count, spent, Utils.formatDate(u.createdAt), u.status])));
   render();
 })();

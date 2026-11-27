@@ -36,7 +36,7 @@
           <div><dt>Số tiền</dt><dd class="fw-bold">${Utils.formatPrice(o.total)}</dd></div>
           <div><dt>Nội dung</dt><dd class="fw-bold">${transferNote}</dd></div>
         </dl>
-        <div class="small text-muted-2">Đơn hàng được xác nhận sau khi cửa hàng nhận được thanh toán (mô phỏng).</div>
+        <div class="small text-muted-2">Đơn hàng được xác nhận sau khi cửa hàng nhận được thanh toán.</div>
       </div>
     </div>` : ''}
     ${o.paymentMethod === 'card' ? `<div class="alert alert-success small mt-4 mb-0"><i class="bi bi-credit-card me-1"></i>Đã thanh toán ${Utils.formatPrice(o.total)} bằng thẻ ${o.card.brand} •••• ${o.card.last4}.</div>` : ''}
@@ -59,12 +59,11 @@
           <div class="summary-title">Sản phẩm</div>
           <div class="co-items">${o.items.map(it => {
             const p = Catalog.product(it.productId);
-            const extras = [it.services.engrave ? `Khắc: “${Utils.escape(it.services.engrave)}”` : '', it.services.giftWrap ? 'Gói quà' : '', it.services.install ? 'Lắp đặt' : ''].filter(Boolean);
+            const extras = [it.services.engrave ? `Khắc: “${Utils.escape(it.services.engrave)}”` : '', it.services.giftWrap ? 'Gói quà' : ''].filter(Boolean);
             return `<div class="co-item"><div class="co-item-img">${p ? `<img src="${Img.product(p)}" alt="">` : ''}<span>${it.qty}</span></div>
               <div class="flex-grow-1 min-w-0"><div class="small fw-medium text-truncate">${Utils.escape(it.name)}</div>${extras.length ? `<div class="small text-muted-2">${extras.join(' · ')}</div>` : ''}</div>
               <div class="small fw-semibold">${Utils.formatPrice(it.price * it.qty)}</div></div>`;
           }).join('')}</div>
-          ${o.gifts.length ? `<div class="small mt-2"><i class="bi bi-gift me-1"></i>Quà tặng: ${o.gifts.map(Utils.escape).join('; ')}</div>` : ''}
           <dl class="summary-rows mb-0">
             <div><dt>Tạm tính</dt><dd>${Utils.formatPrice(o.subtotal)}</dd></div>
             ${o.serviceFee ? `<div><dt>Dịch vụ</dt><dd>${Utils.formatPrice(o.serviceFee)}</dd></div>` : ''}

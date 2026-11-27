@@ -33,12 +33,11 @@
   /* ---------- Giao hàng & thanh toán ---------- */
   function renderShip(calc) {
     const base = calc.subtotal >= S.freeShipThreshold ? 0 : S.shipFee;
-    const heavy = calc.heavy ? S.heavyShipFee : 0;
     $('#shipList').innerHTML = Object.entries(SHIPPING_METHODS).map(([k, m]) => {
-      const fee = base + heavy + (k === 'express' ? S.expressFee : 0);
+      const fee = base + (k === 'express' ? S.expressFee : 0);
       return `<label class="option-card${state.shippingMethod === k ? ' active' : ''}">
         <input class="form-check-input" type="radio" name="ship" value="${k}" ${state.shippingMethod === k ? 'checked' : ''}>
-        <div class="flex-grow-1"><div class="fw-semibold">${m.label}</div><div class="small text-muted-2">${m.desc}${calc.heavy ? ' · hàng cồng kềnh giao bằng xe tải nhỏ' : ''}</div></div>
+        <div class="flex-grow-1"><div class="fw-semibold">${m.label}</div><div class="small text-muted-2">${m.desc}</div></div>
         <div class="fw-semibold">${fee ? Utils.formatPrice(fee) : 'Miễn phí'}</div></label>`;
     }).join('');
   }
@@ -54,12 +53,11 @@
   function renderSummary() {
     const calc = OrderCalc.compute(Cart.items(), { couponCode: state.coupon, shippingMethod: state.shippingMethod, userId: u.id });
     if (calc.lines.some(l => l.issue)) { location.replace('gio-hang.html'); return calc; }
-    const sv = calc.services;
     $('#summary').innerHTML = `
       <div class="summary-title d-flex justify-content-between">Đơn hàng (${calc.valid.reduce((s, l) => s + l.qty, 0)} sản phẩm) <a href="gio-hang.html" class="small fw-normal text-decoration-underline">Sửa</a></div>
       <div class="co-items">${calc.valid.map(l => {
         const s = l.item.services || {};
-        const extras = [l.canEngrave && s.engrave ? `Khắc: “${Utils.escape(String(s.engrave).trim() || '…')}”` : '', s.giftWrap ? 'Gói quà' : '', l.canInstall && s.install ? 'Lắp đặt' : ''].filter(Boolean);
+        const extras = [l.canEngrave && s.engrave ? `Khắc: “${Utils.escape(String(s.engrave).trim() || '…')}”` : '', s.giftWrap ? 'Gói quà' : ''].filter(Boolean);
         return `<div class="co-item">
           <div class="co-item-img"><img src="${Img.product(l.product)}" alt=""><span>${l.qty}</span></div>
           <div class="flex-grow-1 min-w-0"><div class="text-truncate small fw-medium">${Utils.escape(l.product.name)}</div>
@@ -74,13 +72,10 @@
       ${state.coupon && !calc.coupon.ok ? `<div class="small text-sale mt-2">${calc.coupon.error}</div>` : ''}
       ${calc.coupon.ok ? `<div class="small text-success mt-2"><i class="bi bi-check-circle me-1"></i>Đã áp dụng mã ${calc.coupon.promo.code} <button type="button" class="btn btn-link btn-sm p-0 ms-1 text-muted" id="coRemove">Bỏ mã</button></div>` : ''}
 
-      ${calc.gifts.length ? `<div class="gift-box mt-3"><div class="fw-semibold mb-1"><i class="bi bi-gift me-1"></i>Quà tặng kèm</div>
-        <ul class="mb-0">${calc.gifts.map(g => `<li>${Utils.escape(g.gift)}</li>`).join('')}</ul></div>` : ''}
-
       <dl class="summary-rows">
         <div><dt>Tạm tính</dt><dd>${Utils.formatPrice(calc.originalTotal)}</dd></div>
         ${calc.productSaving ? `<div><dt>Giảm giá sản phẩm</dt><dd class="text-sale">-${Utils.formatPrice(calc.productSaving)}</dd></div>` : ''}
-        ${calc.serviceFee || sv.engraveFree || sv.giftWrapFree ? `<div><dt>Dịch vụ kèm theo</dt><dd>${calc.serviceFee ? Utils.formatPrice(calc.serviceFee) : 'Miễn phí'}</dd></div>` : ''}
+        ${calc.serviceFee ? `<div><dt>Dịch vụ kèm theo</dt><dd>${Utils.formatPrice(calc.serviceFee)}</dd></div>` : ''}
         <div><dt>Phí vận chuyển</dt><dd>${calc.shippingFee ? Utils.formatPrice(calc.shippingFee) : 'Miễn phí'}</dd></div>
         ${calc.couponDiscount ? `<div><dt>Mã ${calc.coupon.promo.code}</dt><dd class="text-sale">-${Utils.formatPrice(calc.couponDiscount)}</dd></div>` : ''}
         <div class="summary-total"><dt>Tổng thanh toán</dt><dd>${Utils.formatPrice(calc.total)}</dd></div>

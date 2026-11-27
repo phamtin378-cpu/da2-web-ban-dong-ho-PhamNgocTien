@@ -1,4 +1,4 @@
-// Trang giỏ hàng: số lượng, dịch vụ kèm theo, mã giảm giá, quà tặng, tạm tính.
+// Trang giỏ hàng: số lượng, dịch vụ kèm theo, mã giảm giá, tạm tính.
 Layout.init();
 
 (function () {
@@ -38,11 +38,6 @@ Layout.init();
           <input class="form-check-input js-svc" type="checkbox" id="gw-${id}" data-svc="giftWrap" ${s.giftWrap ? 'checked' : ''}>
           <label class="form-check-label" for="gw-${id}">Gói quà kèm thiệp <span class="text-muted-2">+${Utils.formatPrice(S.giftWrapFee)}/sp</span></label>
         </div>
-        ${l.canInstall ? `
-        <div class="form-check">
-          <input class="form-check-input js-svc" type="checkbox" id="in-${id}" data-svc="install" ${s.install ? 'checked' : ''}>
-          <label class="form-check-label" for="in-${id}">Lắp đặt & cân chỉnh tại nhà <span class="text-muted-2">+${Utils.formatPrice(S.installFee)}/sp</span></label>
-        </div>` : ''}
       </div>`;
   }
 
@@ -59,7 +54,6 @@ Layout.init();
           <span class="fw-semibold">${Utils.formatPrice(pr.price)}</span>
           ${pr.percent ? `<span class="price-old ms-1">${Utils.formatPrice(pr.original)}</span>` : ''}
           ${pr.source === 'flash' ? '<span class="badge-tag tag-flash ms-1"><i class="bi bi-lightning-charge-fill"></i> Flash sale</span>' : ''}
-          ${pr.source === 'promo' ? `<span class="small text-muted-2 ms-1">· ${Utils.escape(pr.promo.name)}</span>` : ''}
         </div>
         ${l.flashNote ? `<div class="cart-note"><i class="bi bi-info-circle"></i> ${l.flashNote}</div>` : ''}
         ${l.issue ? `<div class="cart-issue"><i class="bi bi-exclamation-triangle"></i> ${l.issue}</div>` : ''}
@@ -142,17 +136,12 @@ Layout.init();
             <i class="bi bi-ticket-perforated me-1"></i>Chọn mã từ ví của bạn</button>
           <div class="collapse" id="couponWallet"><div class="coupon-wallet">${couponList(calc)}</div></div>
 
-          ${calc.gifts.length ? `<div class="gift-box"><div class="fw-semibold mb-1"><i class="bi bi-gift me-1"></i>Quà tặng kèm đơn hàng</div>
-            <ul class="mb-0">${calc.gifts.map(g => `<li>${Utils.escape(g.gift)}</li>`).join('')}</ul></div>` : ''}
-
           <dl class="summary-rows">
             <div><dt>Tạm tính (${calc.valid.reduce((s, l) => s + l.qty, 0)} sản phẩm)</dt><dd>${Utils.formatPrice(calc.originalTotal)}</dd></div>
             ${calc.productSaving ? `<div><dt>Giảm giá sản phẩm</dt><dd class="text-sale">-${Utils.formatPrice(calc.productSaving)}</dd></div>` : ''}
-            ${sv.engrave ? `<div><dt>Khắc tên</dt><dd>${sv.engraveFree ? `<s class="text-muted-2 me-1">${Utils.formatPrice(sv.engrave)}</s>Miễn phí` : Utils.formatPrice(sv.engrave)}</dd></div>` : ''}
-            ${sv.giftWrap ? `<div><dt>Gói quà</dt><dd>${sv.giftWrapFree ? `<s class="text-muted-2 me-1">${Utils.formatPrice(sv.giftWrap)}</s>Miễn phí` : Utils.formatPrice(sv.giftWrap)}</dd></div>` : ''}
-            ${sv.install ? `<div><dt>Lắp đặt tại nhà</dt><dd>${Utils.formatPrice(sv.install)}</dd></div>` : ''}
+            ${sv.engrave ? `<div><dt>Khắc tên</dt><dd>${Utils.formatPrice(sv.engrave)}</dd></div>` : ''}
+            ${sv.giftWrap ? `<div><dt>Gói quà</dt><dd>${Utils.formatPrice(sv.giftWrap)}</dd></div>` : ''}
             <div><dt>Phí vận chuyển <span class="text-muted-2">(tạm tính)</span></dt><dd>${calc.shippingFee ? Utils.formatPrice(calc.shippingFee) : 'Miễn phí'}</dd></div>
-            ${calc.heavy ? `<div class="small text-muted-2 d-block">Đã gồm phụ phí hàng cồng kềnh ${Utils.formatPrice(S.heavyShipFee)}</div>` : ''}
             ${calc.couponDiscount ? `<div><dt>Mã ${calc.coupon.promo.code}</dt><dd class="text-sale">-${Utils.formatPrice(calc.couponDiscount)}</dd></div>` : ''}
             <div class="summary-total"><dt>Tổng cộng</dt><dd>${Utils.formatPrice(calc.total)}</dd></div>
           </dl>

@@ -88,7 +88,7 @@
     </div>
     <div class="row g-4 mb-4">
       <div class="col-xl-7"><div class="panel">
-        <div class="panel-head"><h3 class="admin-h3 mb-0">Top sản phẩm bán chạy</h3><button class="btn btn-sm btn-outline-dark" id="exportTop"><i class="bi bi-download me-1"></i>CSV</button></div>
+        <div class="panel-head"><h3 class="admin-h3 mb-0">Top sản phẩm bán chạy</h3></div>
         <div class="table-responsive"><table class="table admin-table align-middle mb-0"><thead><tr><th>#</th><th>Sản phẩm</th><th class="text-end">SL bán</th><th class="text-end">Doanh thu</th></tr></thead><tbody id="topBody"></tbody></table></div></div></div>
       <div class="col-xl-5"><div class="panel">
         <div class="panel-head"><h3 class="admin-h3 mb-0">Trạng thái đơn hàng</h3></div>
@@ -164,7 +164,6 @@
   const top = Object.entries(byProduct).sort((a, b) => b[1].revenue - a[1].revenue).slice(0, 8);
   $('#topBody').innerHTML = top.map(([id, x], i) => `<tr><td>${i + 1}</td><td><a href="../chi-tiet-san-pham.html?id=${id}" target="_blank" rel="noopener">${Utils.escape(x.name)}</a></td>
     <td class="text-end">${x.qty}</td><td class="text-end fw-semibold">${fp(x.revenue)}</td></tr>`).join('') || '<tr><td colspan="4" class="text-muted">Chưa có dữ liệu.</td></tr>';
-  $('#exportTop').addEventListener('click', () => Admin.exportCsv('top-san-pham.csv', ['Mã SP', 'Tên', 'Số lượng', 'Doanh thu'], top.map(([id, x]) => [id, x.name, x.qty, x.revenue])));
 
   const stCount = Object.keys(Orders.STATUS).map(k => orders.filter(o => o.status === k).length);
   new Chart($('#statusChart'), {

@@ -1,4 +1,4 @@
-// Quản lý khuyến mãi: 4 loại chương trình. Nhân viên chỉ xem, admin thêm/sửa/xóa/bật-tắt.
+// Quản lý khuyến mãi: 2 loại chương trình (flash sale, mã giảm giá). Nhân viên chỉ xem, admin thêm/sửa/xóa/bật-tắt.
 (function () {
   if (!Admin.init('promotions', 'Khuyến mãi')) return;
   const fp = Utils.formatPrice;
@@ -25,16 +25,9 @@
         <tbody id="tbody"></tbody></table></div>
     </div>`;
 
-  const scopeLabel = s => {
-    if (!s || s.type === 'all') return 'Toàn bộ sản phẩm';
-    const name = { categories: id => Catalog.category(id)?.name, brands: id => Catalog.brand(id)?.name, products: id => Catalog.product(id)?.name }[s.type];
-    return s.ids.map(name).filter(Boolean).join(', ');
-  };
   const offerText = p => {
-    if (p.type === 'discount') return `Giảm ${p.discountType === 'percent' ? p.value + '%' : fp(p.value)}${p.maxDiscount ? ` (tối đa ${fp(p.maxDiscount)})` : ''}<div class="small text-muted text-truncate" style="max-width:260px">${Utils.escape(scopeLabel(p.scope))}</div>`;
     if (p.type === 'flashsale') return `${p.items.length} sản phẩm<div class="small text-muted">Đã bán ${p.items.reduce((s, i) => s + i.sold, 0)}/${p.items.reduce((s, i) => s + i.quota, 0)} suất</div>`;
-    if (p.type === 'coupon') return `<span class="badge text-bg-dark">${p.code}</span> ${p.discountType === 'percent' ? p.value + '%' : fp(p.value)}<div class="small text-muted">Đơn từ ${fp(p.minOrder || 0)} · đã dùng ${p.used}/${p.usageLimit || '∞'}</div>`;
-    return `${Utils.escape(p.gift)}<div class="small text-muted">${p.minOrder ? 'Đơn từ ' + fp(p.minOrder) : ''}${p.minItemPrice ? 'SP từ ' + fp(p.minItemPrice) : ''} · ${Utils.escape(scopeLabel(p.scope))}</div>`;
+    return `<span class="badge text-bg-dark">${p.code}</span> ${p.discountType === 'percent' ? p.value + '%' : fp(p.value)}<div class="small text-muted">Đơn từ ${fp(p.minOrder || 0)} · đã dùng ${p.used}/${p.usageLimit || '∞'}</div>`;
   };
 
   function render() {
@@ -69,20 +62,6 @@
         </form></div></div></div>`;
   }
 
-  function scopeFields(scope = { type: 'all', ids: [] }) {
-    return `<div class="col-md-4"><label class="form-label" for="fScopeType">Phạm vi áp dụng</label>
-      <select class="form-select" id="fScopeType">${[['all', 'Toàn bộ sản phẩm'], ['categories', 'Theo danh mục'], ['brands', 'Theo thương hiệu'], ['products', 'Sản phẩm cụ thể']]
-        .map(([k, l]) => `<option value="${k}" ${scope.type === k ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
-      <div class="col-md-8"><label class="form-label" for="fScopeIds">Chọn <span class="text-muted small">(giữ Ctrl để chọn nhiều)</span></label>
-      <select class="form-select" id="fScopeIds" multiple size="6" ${scope.type === 'all' ? 'disabled' : ''}>${scopeOptions(scope.type, scope.ids)}</select></div>`;
-  }
-  function scopeOptions(type, ids = []) {
-    const sel = id => ids.includes(id) ? 'selected' : '';
-    if (type === 'categories') return Catalog.parents().map(p => `<option value="${p.id}" ${sel(p.id)}>${p.name} (tất cả)</option>${Catalog.children(p.id).map(c => `<option value="${c.id}" ${sel(c.id)}>— ${c.name}</option>`).join('')}`).join('');
-    if (type === 'brands') return Catalog.brands().map(b => `<option value="${b.id}" ${sel(b.id)}>${Utils.escape(b.name)}</option>`).join('');
-    if (type === 'products') return Catalog.products(true).map(p => `<option value="${p.id}" ${sel(p.id)}>${Utils.escape(p.name)} – ${p.sku}</option>`).join('');
-    return '';
-  }
   function discountFields(p) {
     return `<div class="col-md-4"><label class="form-label" for="fDType">Kiểu giảm</label><select class="form-select" id="fDType">
         <option value="percent" ${p.discountType !== 'fixed' ? 'selected' : ''}>Phần trăm (%)</option><option value="fixed" ${p.discountType === 'fixed' ? 'selected' : ''}>Số tiền (₫)</option></select></div>
@@ -102,7 +81,7 @@
 
   function openForm(type, p) {
     editing = p ? p.id : null;
-    p = p || { type, active: true, start: new Date().toISOString(), end: new Date(Date.now() + 7 * 86400000).toISOString(), scope: { type: 'all', ids: [] } };
+    p = p || { type, active: true, start: new Date().toISOString(), end: new Date(Date.now() + 7 * 86400000).toISOString() };
     flashRows = type === 'flashsale' ? (p.items || []).map(x => Object.assign({}, x)) : [];
     $('#prTitle').textContent = `${editing ? 'Sửa' : 'Tạo'} ${Promo.TYPE_LABEL[type].toLowerCase()}`;
     $('#prBody').dataset.type = type;
@@ -117,15 +96,6 @@
           <div class="col-md-4"><label class="form-label" for="fMin">Đơn tối thiểu (₫)</label><input type="number" class="form-control" id="fMin" min="0" step="1000" value="${p.minOrder || 0}"></div>
           <div class="col-md-4"><label class="form-label" for="fLimit">Tổng lượt dùng</label><input type="number" class="form-control" id="fLimit" min="0" value="${p.usageLimit || ''}" placeholder="Không giới hạn"></div>
           <div class="col-md-4"><label class="form-label" for="fPerUser">Lượt / khách</label><input type="number" class="form-control" id="fPerUser" min="0" value="${p.perUser || 1}"></div>` : ''}
-        ${type === 'discount' ? discountFields(p) + scopeFields(p.scope) : ''}
-        ${type === 'gift' ? `
-          <div class="col-12"><label class="form-label" for="fGift">Quà tặng *</label><input class="form-control" id="fGift" maxlength="100" value="${Utils.escape(p.gift || '')}" placeholder="Ví dụ: Dây da bò Ý trị giá 450.000₫"></div>
-          ${scopeFields(p.scope)}
-          <div class="col-md-6"><label class="form-label" for="fMin">Đơn tối thiểu (₫)</label><input type="number" class="form-control" id="fMin" min="0" step="1000" value="${p.minOrder || 0}"></div>
-          <div class="col-md-6"><label class="form-label" for="fMinItem">Giá sản phẩm tối thiểu (₫)</label><input type="number" class="form-control" id="fMinItem" min="0" step="1000" value="${p.minItemPrice || 0}"></div>
-          <div class="col-12"><div class="form-label">Miễn phí dịch vụ</div>
-            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="fFreeEngrave" ${(p.freeServices || []).includes('engrave') ? 'checked' : ''}><label class="form-check-label" for="fFreeEngrave">Khắc tên</label></div>
-            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="fFreeWrap" ${(p.freeServices || []).includes('giftWrap') ? 'checked' : ''}><label class="form-check-label" for="fFreeWrap">Gói quà</label></div></div>` : ''}
         ${type === 'flashsale' ? `<div class="col-12"><div class="form-label">Sản phẩm flash sale *</div><div id="flashBox">${flashTable()}</div></div>` : ''}
         <div class="col-12"><label class="form-label" for="fDesc">Mô tả hiển thị cho khách</label><input class="form-control" id="fDesc" maxlength="160" value="${Utils.escape(p.description || '')}"></div>
         <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="fActive" ${p.active ? 'checked' : ''}><label class="form-check-label" for="fActive">Kích hoạt</label></div></div>
@@ -156,28 +126,15 @@
     if (!v('fEnd') || new Date(v('fEnd')) <= new Date(v('fStart'))) fail('fEnd', 'Thời gian kết thúc phải sau thời gian bắt đầu.');
     const data = { name: v('fName'), start: Admin.fromLocalInput(v('fStart') || Date.now()), end: Admin.fromLocalInput(v('fEnd') || Date.now()), description: v('fDesc'), active: $('#fActive').checked, type };
 
-    if (type === 'discount' || type === 'coupon') {
+    if (type === 'coupon') {
       const val = num('fValue');
       if (!(val > 0)) fail('fValue', 'Mức giảm phải lớn hơn 0.');
       else if (v('fDType') === 'percent' && val > 90) fail('fValue', 'Phần trăm giảm tối đa 90%.');
       Object.assign(data, { discountType: v('fDType'), value: val, maxDiscount: num('fMax') || null });
-    }
-    if (type === 'discount' || type === 'gift') {
-      const st = v('fScopeType');
-      const ids = st === 'all' ? [] : $$('#fScopeIds option:checked').map(o => o.value);
-      if (st !== 'all' && !ids.length) fail('fScopeIds', 'Chọn ít nhất 1 mục áp dụng.');
-      data.scope = { type: st, ids };
-    }
-    if (type === 'coupon') {
       const code = v('fCode').toUpperCase();
       if (!/^[A-Z0-9]{4,20}$/.test(code)) fail('fCode', 'Mã gồm 4–20 chữ cái/số, không dấu.');
       else if (Promo.all().some(p => p.type === 'coupon' && p.code === code && p.id !== editing)) fail('fCode', 'Mã đã tồn tại.');
       Object.assign(data, { code, minOrder: num('fMin') || 0, usageLimit: num('fLimit') || 0, perUser: num('fPerUser') || 0 });
-    }
-    if (type === 'gift') {
-      if (v('fGift').length < 3) fail('fGift', 'Nhập nội dung quà tặng.');
-      Object.assign(data, { gift: v('fGift'), minOrder: num('fMin') || 0, minItemPrice: num('fMinItem') || 0,
-        freeServices: [$('#fFreeEngrave').checked && 'engrave', $('#fFreeWrap').checked && 'giftWrap'].filter(Boolean) });
     }
     if (type === 'flashsale') {
       readFlashRows();
@@ -207,13 +164,6 @@
   if (canEdit) {
     $$('.js-new').forEach(b => b.addEventListener('click', () => openForm(b.dataset.type, null)));
     $('#prForm').addEventListener('submit', save);
-    $('#prBody').addEventListener('change', e => {
-      if (e.target.id === 'fScopeType') {
-        const sel = $('#fScopeIds');
-        sel.innerHTML = scopeOptions(e.target.value);
-        sel.disabled = e.target.value === 'all';
-      }
-    });
     $('#prBody').addEventListener('click', e => {
       if (e.target.closest('.js-fs-add')) {
         readFlashRows();
